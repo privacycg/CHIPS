@@ -61,7 +61,7 @@ This includes [phasing out support for _third-party cookies_](https://blog.chrom
     <em>
         Before CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the browser navigates to blue.com, the red.com frame can access the cookie set at green.com.
     </em>
-    <br>
+    <br><br>
 </figure></center>
 
 Although third-party cookies have the unfortunate consequence of enabling sites to track user behavior across different top-level sites, there are also use cases on the web today where cross-domain subresources require some notion of session or persistent state.
@@ -183,7 +183,7 @@ When they are visiting a new site, `blue.com`, an embedded `red.com` frame would
     <em>
         After CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the user visits blue.com, the red.com frame cannot access the cookie set at green.com since it was a different top-level site.
     </em>
-    <br>
+    <br><br>
 </figure></center>
 
 **Note:** Firefox recently introduced partitioning all third-party cookies by default as a compatibility measure in the ETP Strict mode, and Safari briefly enabled (and subsequently rolled back) this in a previous version of ITP.
