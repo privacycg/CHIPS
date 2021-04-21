@@ -61,8 +61,8 @@ This includes [phasing out support for _third-party cookies_](https://blog.chrom
     <em>
         Before CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the browser navigates to blue.com, the red.com frame can access the cookie set at green.com.
     </em>
+    <br>
 </figure></center>
-<br>
 
 Although third-party cookies have the unfortunate consequence of enabling sites to track user behavior across different top-level sites, there are also use cases on the web today where cross-domain subresources require some notion of session or persistent state.
 Some examples of such use cases are [SaaS providers](https://github.com/privacycg/first-party-sets/issues/33), [headless CMS providers](https://gist.github.com/rexxars/42d870946d82a3daa0e35b238e0b7d7a), and sandbox domains for serving untrusted user content, e.g. `googleusercontent.com`, `githubusercontent.com` ([1](https://blog.kerika.com/googleusercontent-com-can-trip-you-up-if-you-disable-third-party-cookies/), [2](https://gadgetstouse.com/blog/2020/12/11/fix-google-drive-downloads-not-working-in-microsoft-edge/)).
@@ -183,8 +183,8 @@ When they are visiting a new site, `blue.com`, an embedded `red.com` frame would
     <em>
         After CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the user visits blue.com, the red.com frame cannot access the cookie set at green.com since it was a different top-level site.
     </em>
+    <br>
 </figure></center>
-<br>
 
 **Note:** Firefox recently introduced partitioning all third-party cookies by default as a compatibility measure in the ETP Strict mode, and Safari briefly enabled (and subsequently rolled back) this in a previous version of ITP.
 More details on this approach are covered in the section [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default).
