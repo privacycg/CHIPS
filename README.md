@@ -2,8 +2,8 @@
 
 ## Editors
 
-- [DCtheTall](https://github.com/DCtheTall)
-- [krgovind](https://github.com/krgovind)
+- [Dylan Cutler](https://github.com/DCtheTall)
+- [Kaustubha Govind](https://github.com/krgovind)
 
 ## Participate
 
