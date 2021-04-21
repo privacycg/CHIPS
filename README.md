@@ -83,7 +83,7 @@ When the browser is on `example.com`, it would send a request to `embed.map.com`
 Set-Cookie: __Host-locationid=187; SameSite=None; Secure; HttpOnly; Path=/;
 ```
 
-Any subsequent request to `embed.video.com` would include the following header even when the browser's top-level site is no longer `example.com`:
+Any subsequent request to `embed.map.com` would include the following header even when the browser's top-level site is no longer `example.com`:
 
 ```
 Cookie: __Host-locationid=187;
@@ -93,7 +93,7 @@ While this allows `embed.map.com` to remember their favorite store location for 
 
 #### After unpartitioned third-party cookies are blocked
 
-Our goal is for sites like `embed.map.com` to be able to set a cookie on `example.com` that would only be sent when the user's browser's top-level site is `example.com`.
+Our goal is for sites like `embed.map.com` to be able to set a cookie while embedded into `example.com` that would only be sent when the user's browser's top-level site is `example.com`.
 If the user navigates to another top-level site, subsequent requests to `embed.map.com` would not include the cookie set when the top-level site was `example.com`.
 This would enable `embed.map.com` to store user preferences for their activity per-top-level-site without storing a cross-site identifier on users' machines.
 
@@ -104,21 +104,21 @@ This would enable `embed.map.com` to store user preferences for their activity p
 Consider the site `example.com` who uses a third-party CDN, `static.cdn.com` to host some of its static assets.
 `static.cdn.com`'s network uses load balancing servers which use a cookie to store the result of computing the best way to route an incoming request.
 
-With unpartitioned third-party cookies, when a user navigates to `example.com` for the first time `static.cdn.com` would respond to a browser's first request to them with the following `Set-Cookie` header:
+With unpartitioned third-party cookies, when a user navigates to `example.com` for the first time, `static.cdn.com` would respond to a browser's first request to them with the following `Set-Cookie` header:
 
 ```
 Set-Cookie: __Host-lb=a3e7; SameSite=None; Secure; HttpOnly; Path=/;
 ```
 
-Where the value of the cookie is some string of bits that `static.cdn.com`'s load balancers can use to direct a request.
+...where the value of the cookie is some string of bits that `static.cdn.com`'s load balancers can use to direct a request.
 Subsequent requests to `static.cdn.com` would include the following `Cookie` header:
 
 ```
-Cookie: __Host-lb=187;
+Cookie: __Host-lb=a3e7;
 ```
 
 When a user navigates to another top-level site, `other.com`, that also uses `static.cdn.com` to serve static content.
-The load balancing cookie will be sent in requests to `static.cdn.com` even though the user has never visited `other.com` before.
+The load balancing cookie will be sent in requests to `static.cdn.com`, even though the user has never visited `other.com` before.
 
 #### After unpartitioned third-party cookies are blocked
 
@@ -133,14 +133,14 @@ A partitioned cookie is also more preferable for `static.cdn.com` than JavaScrip
 
 #### Before unpartitioned third-party cookies are blocked
 
-Consider the site example.com now wants to use a third-party [headless CMS](https://en.wikipedia.org/wiki/Headless_content_management_system), `headless.cms.com`, to store data which example.com's custom front end code uses to render their page.
+Consider the site `example.com` now wants to use a third-party [headless CMS](https://en.wikipedia.org/wiki/Headless_content_management_system), `headless.cms.com`, to store data which example.com's custom front end code uses to render their page.
 In order to tie together requests to `headless.cms.com` to a single session, their server sets a cookie:
 
 ```
 Set-Cookie: __Host-SID=c78ef; SameSite=None; Secure; HttpOnly; Path=/;
 ```
 
-Subsequent requests to `headless.cms.com` would include the following Cookie header, even when the top-level site is no longer example.com:
+Subsequent requests to `headless.cms.com` would include the following `Cookie` header, even when the top-level site is no longer `example.com`:
 
 ```
 Cookie: __Host-SID=c78ef;
@@ -174,8 +174,8 @@ Some other examples of use cases for partitioned cookies not listed above are:
 
 In order to meet the use cases, we propose to introduce partitioned cookies a.k.a. CHIPS (Cookies Having Independent Partitioned State).
 
-Under this proposal when a user visits `green.com` and `red.com` sets a cookie in a cross-site request, the user agent would only send the cookie when the top-level site is `green.com`.
-When they are visiting a new site, `blue.com`, an embedded `red.com` frame would receive no cookies.
+Under this proposal when a user visits `green.com` and embedded content from `red.com` sets a cookie in response to the cross-site request, the user agent would only send that cookie when the top-level site is `green.com`.
+When they are visiting a new site, `blue.com`, an embedded `red.com` frame would not receive the cookie set when `red.com` was embedded in `green.com`.
 
 <center><figure>
     <img src="./img/after.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level context.">
@@ -220,8 +220,7 @@ Ideally, we'd like to also have user agents scope partitioned cookies by port as
 
 Partitioned cookies should only be visible to the HTTP layer, which makes them less vulnerable to security vulnerabilities such as XSS-attacks.
 
-Since Chrome data suggests only ~17% of cookies use the `HttpOnly` attribute.
-We believe that requiring partitioned cookies be HTTP-only will help facilitate cookies becoming more secure overall.
+Since Chrome data suggests only ~17% of cookies use the `HttpOnly` attribute, we believe that requiring partitioned cookies be HTTP-only will help facilitate cookies becoming more secure overall.
 
 Note: This requirement and the requirement to only use secure protocols makes partitioned cookies behave more similarly to [HTTP State Tokens](https://github.com/mikewest/http-state-tokens).
 
