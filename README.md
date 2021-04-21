@@ -56,10 +56,10 @@ In order to increase privacy on the web, browser vendors are either planning or 
 This includes [phasing out support for _third-party cookies_](https://blog.chromium.org/2020/01/building-more-private-web-path-towards.html), cookies sent in requests to sites other than the top-level document's site, since such cookies enable servers to track users' behavior across different top-level sites.
 
 <center><figure>
-    <img src="./img/before.png" width="600px">
+    <img src="./img/before.png" width="600px" alt="Before CHIPS third parties have access to unpartitioned cookies across top-level sites.">
     <figcaption>
         Before CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the browser navigates to blue.com, the red.com frame can access the cookie set at green.com.
-    <figcaption>
+    </figcaption>
 </figure></center>
 
 Although third-party cookies have the unfortunate consequence of enabling sites to track user behavior across different top-level sites, there are also use cases on the web today where cross-domain subresources require some notion of session or persistent state.
@@ -176,10 +176,10 @@ Under this proposal when a user visits `green.com` and `red.com` sets a cookie i
 When they are visiting a new site, `blue.com`, an embedded `red.com` frame would receive no cookies.
 
 <center><figure>
-    <img src="./img/after.png" width="600px">
+    <img src="./img/after.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level context.">
     <figcaption>
         After CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the user visits blue.com, the red.com frame cannot access the cookie set at green.com since it was a different top-level site.
-    <figcaption>
+    </figcaption>
 </figure></center>
 
 **Note:** Firefox recently introduced partitioning all third-party cookies by default as a compatibility measure in the ETP Strict mode, and Safari briefly enabled (and subsequently rolled back) this in a previous version of ITP.
