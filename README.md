@@ -278,7 +278,7 @@ Below is a description of how `Partitioned` cookies can be used to meet the use 
 
 #### Using Partitioned for third-party embeds
 
-Let us reconsider [example]() of `shoes.com` and `embed.maps.com`: a locator service which wishes to use a cookie to store user preferences for their activity on `shoes.com` (e.g. their favorite store location).
+Let us reconsider [example](#third-party-store-finder-service) of `shoes.com` and `embed.maps.com`: a locator service which wishes to use a cookie to store user preferences for their activity on `shoes.com` (e.g. their favorite store location).
 
 After third-party cookies are removed, `embed.maps.com` could no longer set a cookie when the top-level site is not `maps.com` or not in a First-Party Set with `maps.com`, unless they include the `Partitioned` attribute:
 
