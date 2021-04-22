@@ -13,7 +13,7 @@
 
 - [Motivation](#motivation)
 - [Key Scenarios](#key-scenarios)
-    - [Third-party locator service](#third-party-locator-service)
+    - [Third-party store-finder service](#third-party-store-finder-service)
     - [CDN load balancing](#cdn-load-balancing)
     - [Headless CMS](#headless-cms)
     - [Other examples of use cases](#other-examples-of-use-cases)
@@ -72,30 +72,36 @@ In these scenarios, the intention for the cookies is not to track across sites, 
 
 Below are some examples of third-party cookie use cases that are unrelated to tracking that we would like to support with CHIPS. We first describe how unpartitioned third-party cookies meet that particular use case and then we describe the ideal end state would be when cross-site cookies are partitioned by top-level site.
 
-### Third-party locator service
+### Third-party store-finder service
 
 #### Before unpartitioned third-party cookies are blocked
 
-Let's say that a page on `example.com` uses an embedded third-party location service whose host is `embed.map.com`, which uses a cookie to save the location of the user's favorite store location.
-When the browser is on `example.com`, it would send a request to `embed.map.com` which would set a cookie by responding with the following header:
+Let's say that a page on `shoes.com` wants to show users a map of their store locations, but they do not have the  resources to implement a locator service.
+Instead, they contract that work out to a third-party SaaS provider.
+`embed.maps.com`, and `shoes.com` embeds a frame owned by `embed.maps.com` which renders a map that users can use to pick their preferred store location and look up directions.
+
+When the browser is on `shoes.com`, an embedded frame owned by `embed.maps.com` sets a cookie to store a user's preferred store location:
 
 ```
 Set-Cookie: __Host-locationid=187; SameSite=None; Secure; HttpOnly; Path=/;
 ```
 
-Any subsequent request to `embed.map.com` would include the following header even when the browser's top-level site is no longer `example.com`:
+On subsequent visits to `shoes.com`, the first request to `embed.maps.com` would include the following header:
 
 ```
 Cookie: __Host-locationid=187;
 ```
 
-While this allows `embed.map.com` to remember their favorite store location for `example.com`, it also gives `embed.map.com` a persistent way to identify users across different top-level sites.
+This allows `embed.maps.com` to know the user's preferred location for `shoes.com`, which can be used for server-side rendering of their map, resulting in end users seeing a faster loading map which remembered their preferred store location. However, this unpartitioned cookie could also include cross-site identifiers that let `embed.maps.com`
 
 #### After unpartitioned third-party cookies are blocked
 
-Our goal is for sites like `embed.map.com` to be able to set a cookie while embedded into `example.com` that would only be sent when the user's browser's top-level site is `example.com`.
-If the user navigates to another top-level site, subsequent requests to `embed.map.com` would not include the cookie set when the top-level site was `example.com`.
-This would enable `embed.map.com` to store user preferences for their activity per-top-level-site without storing a cross-site identifier on users' machines.
+Without the ability to set any cross-site cookies, one alternative that services like `embed.maps.com` have is to use other forms of browser storage (e.g. LocalStorage).
+In order to detect the presence of these other types of client state, `embed.maps.com` will have to wait for a JavaScript execution context to load before they can access the user preferences: resulting in longer loading times and a worse user experience.
+
+Our goal is for sites like `embed.maps.com` to be able to set a cookie while embedded into `shoes.com` that would only be sent when the user's browser's top-level site is `shoes.com`.
+If the user navigates to another top-level site, subsequent requests to `embed.maps.com` would not include the cookie set when the top-level site was `shoes.com`.
+This would enable `embed.maps.com` to store user preferences with cookies without being able to store a cross-site identifier on users' machines.
 
 ### CDN load balancing
 
@@ -272,23 +278,23 @@ Below is a description of how `Partitioned` cookies can be used to meet the use 
 
 #### Using Partitioned for third-party embeds
 
-Let us reconsider the third-party embed example above with `embed.map.com`: a locator service which wishes to use a cookie to store user preferences for their activity on `example.com` (e.g. their favorite store location).
+Let us reconsider [example]() of `shoes.com` and `embed.maps.com`: a locator service which wishes to use a cookie to store user preferences for their activity on `shoes.com` (e.g. their favorite store location).
 
-After third-party cookies are removed, `embed.map.com` could no longer set a cookie when the top-level site is not `map.com` or not in a First-Party Set with `map.com`, unless they include the `Partitioned` attribute:
+After third-party cookies are removed, `embed.maps.com` could no longer set a cookie when the top-level site is not `maps.com` or not in a First-Party Set with `maps.com`, unless they include the `Partitioned` attribute:
 
 <pre>
 Set-Cookie: __Host-locationid=187; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitioned;</b>
 </pre>
 
-When the browser's top-level context is still `example.com`, any subsequent request to `embed.map.com` would include the following header:
+When the browser's top-level context is still `shoes.com`, any subsequent request to `embed.maps.com` would include the following header:
 
 ```
 Cookie: __Host-locationid=187;
 ```
 
-However, when the browser navigates to a different top-level context then the browser would not send the `Cookie` header above to `embed.map.com`.
-This gives `embed.map.com` the capability to store users' favorite `example.com` store location, but those preferences would only be accessible to `embed.map.com` when the top-level context is `example.com`.
-This is to ensure that `embed.map.com` cannot use this cookie to link users' activity across different top-level contexts.
+However, when the browser navigates to a different top-level context then the browser would not send the `Cookie` header above to `embed.maps.com`.
+This gives `embed.maps.com` the capability to store users' favorite `shoes.com` store location, but those preferences would only be accessible to `embed.maps.com` when the top-level context is `shoes.com`.
+This is to ensure that `embed.maps.com` cannot use this cookie to link users' activity across different top-level contexts.
 
 #### CDN load balancing and headless CMS
 
