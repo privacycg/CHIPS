@@ -132,7 +132,7 @@ It follows that `static.cdn.com` could also use this cookie to also tie together
 #### After unpartitioned third-party cookies are blocked
 
 Without unpartitioned cookies, `static.cdn.com` could not use cookie to store load balancing information on the client side.
-This means that they must either compute the best way to route a request each time a user pings their server, but this would increae latency and lead to user frustration.
+This means that they must either compute the best way to route a request each time a user pings their server, but this would increase latency and lead to user frustration.
 `static.cdn.com` could use alternative storage mechanisms to store this information for its load balancers, but this would mean that `static.cdn.com` would need script execution in order to access this information.
 This means that if `example.com` is just using `static.cdn.com` to host static assets and does not want to embed their JavaScript into their site, users would experience high latency.
 
