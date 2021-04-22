@@ -134,7 +134,7 @@ It follows that `static.cdn.com` could also use this cookie to also tie together
 Without unpartitioned cookies, `static.cdn.com` could not use cookie to store load balancing information on the client side.
 This means that they must either compute the best way to route a request each time a user pings their server, but this would increae latency and lead to user frustration.
 `static.cdn.com` could use alternative storage mechanisms to store this information for its load balancers, but this would mean that `static.cdn.com` would need script execution in order to access this information.
-If `example.com` is just using `static.cdn.com` to host static assets and does not want to embed their JavaScript into their site, users would experience high latency.
+This means that if `example.com` is just using `static.cdn.com` to host static assets and does not want to embed their JavaScript into their site, users would experience high latency.
 
 Our goal is to allow third-party CDNs like `static.cdn.com` to be able to use cookies for their load balancers but have those cookies be partitioned by top-level site.
 This means that if `static.cdn.com` sets a load balancing cookie on a browser on `example.com`, requests to `static.cdn.com` will not include that cookie when the browser navigates to `other.com`.
