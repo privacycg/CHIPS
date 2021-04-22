@@ -92,7 +92,7 @@ On subsequent visits to `shoes.com`, the first request to `embed.maps.com` would
 Cookie: __Host-locationid=187;
 ```
 
-This allows `embed.maps.com` to know the user's preferred location for `shoes.com`, which can be used for server-side rendering of their map, resulting in end users seeing a faster-loading map which remembers their preferred store location. However, this unpartitioned cookie could also include cross-site identifiers that let `embed.maps.com`.
+This allows `embed.maps.com` to know the user's preferred location for `shoes.com`, which can be used for server-side rendering of their map, resulting in end users seeing a faster-loading map which remembers their preferred store location. However, this unpartitioned cookie could also include cross-site identifiers that let `embed.maps.com` track user activity across top-level sites.
 
 #### After unpartitioned third-party cookies are blocked
 
