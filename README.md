@@ -124,10 +124,10 @@ Cookie: __Host-lb=a3e7;
 ```
 
 The ability to set a cookie this way allows requests to `static.cdn.com` to have lower latency, since they do not need to compute how to route each request to the server.
-This results in lower latency and a better experience for users on sites that use `static.cdn.com` to serve static content.
+This improved latency provides a better experience for users on sites that use `static.cdn.com` to serve static content.
 
 The problem with this design is that when a user navigates to another top-level site that also uses `static.cdn.com` to serve static content, the load balancing cookie will be sent in requests to `static.cdn.com`.
-It follows that `static.cdn.com` could also use this cookie to cross users' activity across different top-level sites.
+It follows that `static.cdn.com` could also use this cookie to also tie together users' sessions across different top-level sites.
 
 #### After unpartitioned third-party cookies are blocked
 
