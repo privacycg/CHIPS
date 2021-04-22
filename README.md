@@ -110,7 +110,7 @@ This would enable `embed.maps.com` to store user preferences with cookies withou
 Consider the site `example.com` who uses a third-party CDN, `static.cdn.com` to host some of its static assets.
 `static.cdn.com`'s network uses load balancing servers which use a cookie to store the result of computing the best way to route an incoming request.
 
-With unpartitioned third-party cookies, when a user navigates to `example.com` for the first time, `static.cdn.com` would respond to a browser's first request to them with the following `Set-Cookie` header:
+With unpartitioned third-party cookies, when a user navigates to `example.com` for the first time, `static.cdn.com` would respond to a browser's first request with the following `Set-Cookie` header:
 
 ```
 Set-Cookie: __Host-lb=a3e7; SameSite=None; Secure; HttpOnly; Path=/;
@@ -123,10 +123,18 @@ Subsequent requests to `static.cdn.com` would include the following `Cookie` hea
 Cookie: __Host-lb=a3e7;
 ```
 
-When a user navigates to another top-level site, `other.com`, that also uses `static.cdn.com` to serve static content.
-The load balancing cookie will be sent in requests to `static.cdn.com`, even though the user has never visited `other.com` before.
+The ability to set a cookie this way allows requests to `static.cdn.com` to have lower latency, since they do not need to compute how to route each request to the server.
+This results in lower latency and a better experience for users on sites that use `static.cdn.com` to serve static content.
+
+The problem with this design is that when a user navigates to another top-level site that also uses `static.cdn.com` to serve static content, the load balancing cookie will be sent in requests to `static.cdn.com`.
+It follows that `static.cdn.com` could also use this cookie to cross users' activity across different top-level sites.
 
 #### After unpartitioned third-party cookies are blocked
+
+Without unpartitioned cookies, `static.cdn.com` could not use cookie to store load balancing information on the client side.
+This means that they must either compute the best way to route a request each time a user pings their server, but this would increae latency and lead to user frustration.
+`static.cdn.com` could use alternative storage mechanisms to store this information for its load balancers, but this would mean that `static.cdn.com` would need script execution in order to access this information.
+If `example.com` is just using `static.cdn.com` to host static assets and does not want to embed their JavaScript into their site, users would experience high latency.
 
 Our goal is to allow third-party CDNs like `static.cdn.com` to be able to use cookies for their load balancers but have those cookies be partitioned by top-level site.
 This means that if `static.cdn.com` sets a load balancing cookie on a browser on `example.com`, requests to `static.cdn.com` will not include that cookie when the browser navigates to `other.com`.
