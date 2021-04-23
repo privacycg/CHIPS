@@ -37,7 +37,7 @@
         - [`HttpOnly` attribute](#httponly-attribute)
         - [`SameSite` attribute](#samesite-attribute)
         - [`SameParty` attribute](#sameparty-attribute)
-        - [Limit the number of cookies a third party can use in a single partiton](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition)
+        - [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition)
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
     - [Service workers](#service-workers)
@@ -231,7 +231,7 @@ This helps address some aspects of cookies' [weak confidentiality](https://tools
 
 Partitioned cookies should also be hostname bound.
 This and the requirement partitioned cookies be sent over secure protocols makes partitioned cookies as close to origin-bound as possible.
-We also would like have user agents scope partitioned cookies by port as well, making them origin-scoped, but we think this requirement should only be enforced if/when [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled.
+We would like to have user agents scope partitioned cookies by port as well, making them origin-scoped, but we think this requirement should only be enforced if/when [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled.
 
 ### Only visible to the HTTP layer
 
@@ -356,7 +356,7 @@ Since sites within the same First-Party Set are allowed access to unpartitioned 
 
 A third-party domain's cookie jar should have a much lower per-partition size limit than existing garbage collection thresholds ([180 cookies per domain](https://source.chromium.org/chromium/chromium/src/+/master:net/cookies/cookie_monster.h;l=104;drc=da465ccade3a693e1deac3bf01b1c83d12dbf553) in Chrome).
 User agents must limit third-party domains to just one or some small number of cookies per-partition.
-Tthe number of cookies in a single partition per third-party is scoped by domain so that a third-party could not circumvent this limit by registering new subdomains.
+The number of cookies in a single partition per third-party is scoped by domain so that a third-party could not circumvent this limit by registering new subdomains.
 
 User agents may enforce some global limit on the number of partitioned cookies in the cookie jar.
 This is to ensure that as a user visits more top-level sites over time that the number of partitioned cookies saved to their machine does not grow over time without bound.
@@ -426,14 +426,15 @@ One way to potentially circumvent this is to make the global per-partition limit
 
 ### Applying the 180 cookies-per-domain limit
 
-We recommend that user agents do not include `Partitioned` cookies in the 180 per-domain cookie limit.
-The reason being that malicious third parties could abuse this information to learn information about users across different top-level partitions.
+One way to avoid creating a large memory footprint may be to enforce the existing cookie limits (180 per domain in Chrome) across all cookies scoped to that domain, including `Partitioned` cookies across all partitions.
+However, this may create an inadvertent side-channel that can be used by malicious third parties to learn information about users across different top-level partitions.
 
-Say `evil.com` was embedded on a site, `1p.com`, and it sets 180 cookies on the users' machines when they visit `1p.com`.
+Consider if `evil.com` was embedded on a site, `1p.com`, and it sets 180 cookies on the users' machines when they visit `1p.com`.
 On other top-level sites, `evil.com` sets another cookie which evicts one of the cookies `evil.com` set in `1p.com`'s partition.
 When a user returns to `1p.com`, `evil.com` can look at how many cookies were evicted from its partition on `1p.com` to see if the user visited another site with `evil.com`.
 
-This attack can happen even if user agents enforce limitations on the number of cookies, since `evil.com` can just set as many cookies as it is allowed per-partition and then observe if any are evicted. It is not clear what the relative limits need to be to prevent `evil.com` from learning any identifiable information about users this way.
+This attack can happen even if user agents enforce limits on the number of cookies that a third party can have per-partition, since `evil.com` can just set as many cookies as it is allowed per-partition and then observe if any are evicted.
+It is not clear what the relative limits need to be to prevent `evil.com` from learning any identifiable information about users this way.
 
 ### Requiring the `__Secure-` prefix
 
