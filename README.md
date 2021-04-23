@@ -24,6 +24,7 @@
     - [Only sent over secure protocols](#only-sent-over-secure-protocols)
     - [Hostname-bound](#hostname-bound)
     - [Only visible to the HTTP layer](#only-visible-to-the-http-layer)
+    - [Avoid a large memory footprint](#avoid-a-large-memory-footprint)
 - [Detailed Design](#detailed-design)
     - [Opt-in cookie attribute](#opt-in-cookie-attribute)
     - [Partition by top-level context](#partition-by-top-level-context)
