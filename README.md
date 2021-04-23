@@ -31,17 +31,19 @@
     - [Example usage](#example-usage)
         - [Using Partitioned for third-party embeds](#using-partitioned-for-third-party-embeds)
         - [CDN load balancing and headless CMS](#cdn-load-balancing-and-headless-cms)
-    - [How to enforce best practices](#how-to-enforce-best-practices)
+    - [How to enforce design principles](#how-to-enforce-design-principles)
         - [Partitioned cookies must use the `__Host-` prefix](#partitioned-cookies-must-use-the-__host--prefix)
         - [`HttpOnly` attribute](#httponly-attribute)
         - [`SameSite` attribute](#samesite-attribute)
         - [`SameParty` attribute](#sameparty-attribute)
+        - [Limit the number of cookies a third party can use in a single partiton](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition)
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
     - [Service workers](#service-workers)
 - [Alternative Solutions](#alternative-solutions)
     - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
     - [Limit the number of cookies in a top-level context's partition](#limit-the-number-of-cookies-in-a-top-level-contexts-partition)
+    - [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit)
     - [Requiring the `__Secure-` prefix](#requiring-the-__secure--prefix)
     - [Not requiring the `__Host-` prefix](#not-requiring-the-__host--prefix)
     - [DNS CNAME’ing](#dns-cnameing)
@@ -228,7 +230,7 @@ This helps address some aspects of cookies' [weak confidentiality](https://tools
 
 Partitioned cookies should also be hostname bound.
 This and the requirement partitioned cookies be sent over secure protocols makes partitioned cookies as close to origin-bound as possible.
-Ideally, we'd like to also have user agents scope partitioned cookies by port as well, making them origin-scoped, but we think this requirement should only be enforced if/when [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled.
+We also would like have user agents scope partitioned cookies by port as well, making them origin-scoped, but we think this requirement should only be enforced if/when [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled.
 
 ### Only visible to the HTTP layer
 
@@ -238,14 +240,16 @@ Since Chrome data suggests only ~17% of cookies use the `HttpOnly` attribute, we
 
 Note: This requirement and the requirement to only use secure protocols makes partitioned cookies behave more similarly to [HTTP State Tokens](https://github.com/mikewest/http-state-tokens).
 
-### Limit the number of cookies a third party can use in a single partition
+### Avoid a large memory footprint
 
-A third-party domain's cookie jar should have a much lower per-partition size limit than existing garbage collection thresholds ([180 cookies per domain](https://source.chromium.org/chromium/chromium/src/+/master:net/cookies/cookie_monster.h;l=104;drc=da465ccade3a693e1deac3bf01b1c83d12dbf553) in Chrome).
-We propose that third-party domains be limited to just one or some small number of cookies per-partition.
-We chose to scope the number of cookies in a single partition per third-party by domain so that a third-party could not circumvent this limit by registering new subdomains.
+One concern about introducing partitioned cookies is the proliferation of state on users' machines.
+With unpartitioned third-party cookies, a single third party only needed to set one cookie on a user's machines which could be used for cross-site requests across all top-level sites a user visits.
+After unpartitioned third-party cookies are removed, a third party will need to set one cookie per top-level context the user visits, resulting in more cookies set on user's machines.
 
-Browsers may enforce some global limit on the number of partitioned cookies in the cookie jar.
-This is to ensure that as a user visits more top-level sites over time that the number of partitioned cookies saved to their machine does not grow over time without bound.
+Browsers that wish to support partitioned cookies must impose additional limitations on the number of cookies available to a third-party domain per-partition.
+
+However, it is also necessary for user agents to design these limits in a way that does not allow malicious third parties from learning cross-site information about users.
+See [Limit the number of cookies in a top-level context's partition](#limit-the-number-of-cookies-in-a-top-level-contexts-partition) and [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) in [Alternative Solutions](#alternative-solutions) for more details.
 
 ## Detailed Design
 
@@ -320,7 +324,7 @@ When the browser navigates to another top-level site, then subsequent requests t
 
 One can extend this to the headless CMS example using the `__Host-SID` cookie described in the [Key Scenarios](#key-scenarios) section.
 
-### How to enforce best practices
+### How to enforce design principles
 
 #### Partitioned cookies must use the `__Host-` prefix
 
@@ -346,6 +350,15 @@ User agents may only accept `Partitioned` cookies if their `SameSite` attribute 
 
 User agents should reject any cookie set with both `Partitioned` and `SameParty` attributes.
 Since sites within the same First-Party Set are allowed access to unpartitioned `SameParty` cookies, the semantic is inconsistent with partitioned cookies.
+
+#### Limit the number of cookies a third party can use in a single partition
+
+A third-party domain's cookie jar should have a much lower per-partition size limit than existing garbage collection thresholds ([180 cookies per domain](https://source.chromium.org/chromium/chromium/src/+/master:net/cookies/cookie_monster.h;l=104;drc=da465ccade3a693e1deac3bf01b1c83d12dbf553) in Chrome).
+User agents must limit third-party domains to just one or some small number of cookies per-partition.
+Tthe number of cookies in a single partition per third-party is scoped by domain so that a third-party could not circumvent this limit by registering new subdomains.
+
+User agents may enforce some global limit on the number of partitioned cookies in the cookie jar.
+This is to ensure that as a user visits more top-level sites over time that the number of partitioned cookies saved to their machine does not grow over time without bound.
 
 ### Clearing partitioned cookies
 
@@ -409,6 +422,17 @@ A malicious third party could use this information to determine if a user has lo
 Another attack is where `evil.com` communicates with other third parties by setting cookies only based on a user’s personal attributes or preferences.
 
 One way to potentially circumvent this is to make the global per-partition limit much larger than the per-partition limit for each third-party domain, but it is unclear what the relative size of the global per-partition limit would have to be to mitigate these attacks.
+
+### Applying the 180 cookies-per-domain limit
+
+We recommend that user agents do not include `Partitioned` cookies in the 180 per-domain cookie limit.
+The reason being that malicious third parties could abuse this information to learn information about users across different top-level partitions.
+
+Say `evil.com` was embedded on a site, `1p.com`, and it sets 180 cookies on the users' machines when they visit `1p.com`.
+On other top-level sites, `evil.com` sets another cookie which evicts one of the cookies `evil.com` set in `1p.com`'s partition.
+When a user returns to `1p.com`, `evil.com` can look at how many cookies were evicted from its partition on `1p.com` to see if the user visited another site with `evil.com`.
+
+This attack can happen even if user agents enforce limitations on the number of cookies, since `evil.com` can just set as many cookies as it is allowed per-partition and then observe if any are evicted. It is not clear what the relative limits need to be to prevent `evil.com` from learning any identifiable information about users this way.
 
 ### Requiring the `__Secure-` prefix
 
