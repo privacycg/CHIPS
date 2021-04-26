@@ -250,7 +250,7 @@ After unpartitioned third-party cookies are removed, a third party will need to 
 Browsers that wish to support partitioned cookies must impose additional limitations on the number of cookies available to a third-party domain per-partition.
 
 However, it is also necessary for user agents to design these limits in a way that does not allow malicious third parties from learning cross-site information about users.
-See [Limit the number of cookies in a top-level context's partition](#limit-the-number-of-cookies-in-a-top-level-contexts-partition) and [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) in [Alternative Solutions](#alternative-solutions) for more details.
+See [Limit the number of cookies in a top-level context's partition](#limit-the-number-of-cookies-in-a-top-level-contexts-partition) for [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) in [Alternative Solutions](#alternative-solutions) for more details.
 
 ## Detailed Design
 
@@ -433,8 +433,14 @@ Consider if `evil.com` was embedded on a site, `1p.com`, and it sets 180 cookies
 On other top-level sites, `evil.com` sets another cookie which evicts one of the cookies `evil.com` set in `1p.com`'s partition.
 When a user returns to `1p.com`, `evil.com` can look at how many cookies were evicted from its partition on `1p.com` to see if the user visited another site with `evil.com`.
 
-This attack can happen even if user agents enforce limits on the number of cookies that a third party can have per-partition, since `evil.com` can just set as many cookies as it is allowed per-partition and then observe if any are evicted.
-It is not clear what the relative limits need to be to prevent `evil.com` from learning any identifiable information about users this way.
+This attack can happen even if user agents additionally enforce limits on the number of cookies that a third party can have per-partition.
+Imagine `evil.com` has embedded content on many top-level sites.
+On each site, they set `N` cookies, the maximum `evil.com` is allowed to set per-partition.
+Once the user has visited `180/N` sites with an `evil.com` embed, once they visit another site with `evil.com`, the global limit will be exceeded and other `evil.com` cookies in other partitions would be evicted.
+When the user returns to a site with an `evil.com` embed, `evil.com` will detect that cookies have been evicted.
+
+How much entropy `evil.com` can learn about a particular user from this type of attack has not been explored.
+Therefore it is not clear what the relative global and per-partition limits would need to be to prevent `evil.com` from learning any identifiable information about users this way.
 
 ### Requiring the `__Secure-` prefix
 
