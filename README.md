@@ -15,7 +15,6 @@
 - [Key Scenarios](#key-scenarios)
     - [Third-party store-finder service](#third-party-store-finder-service)
     - [CDN load balancing](#cdn-load-balancing)
-    - [Headless CMS](#headless-cms)
     - [Other examples of use cases](#other-examples-of-use-cases)
 - [Non-goals](#non-goals)
 - [CHIPS: Opt-in Partitioned Cookies](#chips-opt-in-partitioned-cookies)
@@ -31,7 +30,7 @@
     - [Using `Set-Cookie` with `Partitioned`](#using-set-cookie-with-partitioned)
     - [Example usage](#example-usage)
         - [Using Partitioned for third-party embeds](#using-partitioned-for-third-party-embeds)
-        - [CDN load balancing and headless CMS](#cdn-load-balancing-and-headless-cms)
+        - [CDN load balancing](#cdn-load-balancing)
     - [How to enforce design principles](#how-to-enforce-design-principles)
         - [Partitioned cookies must use the `__Host-` prefix](#partitioned-cookies-must-use-the-__host--prefix)
         - [`HttpOnly` attribute](#httponly-attribute)
@@ -145,29 +144,6 @@ This means that if `static.cdn.com` sets a load balancing cookie on a browser on
 This implies that `static.cdn.com` will have to recompute the value of the load balancing cookie for each top-level site a user visits.
 However, this is preferable to blocking all cookies in third-party contexts because then `static.cdn.com` will have to compute the best way to route a request each time.
 A partitioned cookie is also more preferable for `static.cdn.com` than JavaScript storage since any data in storage would not be available until the document loads.
-
-### Headless CMS
-
-#### Before unpartitioned third-party cookies are blocked
-
-Consider the site `example.com` now wants to use a third-party [headless CMS](https://en.wikipedia.org/wiki/Headless_content_management_system), `headless.cms.com`, to store data which example.com's custom front end code uses to render their page.
-In order to tie together requests to `headless.cms.com` to a single session, their server sets a cookie:
-
-```
-Set-Cookie: __Host-SID=c78ef; SameSite=None; Secure; HttpOnly; Path=/;
-```
-
-Subsequent requests to `headless.cms.com` would include the following `Cookie` header, even when the top-level site is no longer `example.com`:
-
-```
-Cookie: __Host-SID=c78ef;
-```
-
-#### After unpartitioned third-party cookies are blocked
-
-Our goal is to give sites like `headless.cms.com` a way to set session cookies partitioned by top-level site and are available after unpartitioned third-party cookies are blocked.
-These cookies could be used to identify which requests belong to the same session within a top-level site.
-However, unlike the current state of the art, we do not want a cookie set when the top-level site is `example.com` to be sent when the browser navigates to another site.
 
 ### Other examples of use cases
 
@@ -309,7 +285,7 @@ However, when the browser navigates to a different top-level context then the br
 This gives `embed.maps.com` the capability to store users' favorite `shoes.com` store location, but those preferences would only be accessible to `embed.maps.com` when the top-level context is `shoes.com`.
 This is to ensure that `embed.maps.com` cannot use this cookie to link users' activity across different top-level contexts.
 
-#### CDN load balancing and headless CMS
+#### CDN load balancing
 
 Cookies with the `Partitioned` attribute can meet the load balancing use case for `static.cdn.com` or the session cookie for `headless.cms.com`.
 For the sake of brevity, let us only consider the load balancer use case.
@@ -322,8 +298,6 @@ Set-Cookie: __Host-lb=a3e7; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitio
 
 This cookie would only be available to `static.cdn.com` when the browser's top-level site is `example.com`.
 When the browser navigates to another top-level site, then subsequent requests to `static.cdn.com` will not include this cookie.
-
-One can extend this to the headless CMS example using the `__Host-SID` cookie described in the [Key Scenarios](#key-scenarios) section.
 
 ### How to enforce design principles
 
