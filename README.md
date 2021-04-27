@@ -14,8 +14,8 @@
 - [Motivation](#motivation)
 - [Key Scenarios](#key-scenarios)
     - [Third-party store-finder service](#third-party-store-finder-service)
+    - [Third-party customer service chat embed](#third-party-customer-service-chat-embed)
     - [CDN load balancing](#cdn-load-balancing)
-    - [Headless CMS](#headless-cms)
     - [Other examples of use cases](#other-examples-of-use-cases)
 - [Non-goals](#non-goals)
 - [CHIPS: Opt-in Partitioned Cookies](#chips-opt-in-partitioned-cookies)
@@ -30,8 +30,9 @@
     - [Partition by top-level context](#partition-by-top-level-context)
     - [Using `Set-Cookie` with `Partitioned`](#using-set-cookie-with-partitioned)
     - [Example usage](#example-usage)
-        - [Using Partitioned for third-party embeds](#using-partitioned-for-third-party-embeds)
-        - [CDN load balancing and headless CMS](#cdn-load-balancing-and-headless-cms)
+        - [Third-party locator service](#third-party-locator-service)
+        - [Third-party customer support widgets](#third-party-customer-support-widgets)
+        - [CDN load balancing](#cdn-load-balancing)
     - [How to enforce design principles](#how-to-enforce-design-principles)
         - [Partitioned cookies must use the `__Host-` prefix](#partitioned-cookies-must-use-the-__host--prefix)
         - [`HttpOnly` attribute](#httponly-attribute)
@@ -106,6 +107,39 @@ Our goal is for sites like `embed.maps.com` to be able to set a cookie while emb
 If the user navigates to another top-level site, subsequent requests to `embed.maps.com` would not include the cookie set when the top-level site was `shoes.com`.
 This would enable `embed.maps.com` to store user preferences with cookies without being able to store a cross-site identifier on users' machines.
 
+### Third-party customer service chat embed
+
+#### Before unpartitioned third-party cookies are blocked
+
+Consider `retail.com` has noticed that users are having trouble signing up for an account and navigating through the site's purchase flow.
+The owners of `retail.com` contract a third party, `support.chat.com`, to embed a chat widget on `retail.com` to help users who need support.
+
+When a user is intercting with `support.chat.com`'s widget, they set a session cookie to continue conversations between top-level page navigations:
+
+```
+Set-Cookie: __Host-coversationid=a3e70; SameSite=None; Secure; HttpOnly; Path=/;
+```
+
+This way when a new page on `retail.com` loads, the request to load the frame with `support.chat.com`'s will include a cookie which lets `support.chat.com` know which conversation the request belongs to:
+
+```
+Cookie: __Host-coversationid=a3e70;
+```
+
+However, this cookie also provides `support.chat.com` a cross-site identifier that they can use to track users on other sites that use `support.chat.com`.
+
+#### After unpartitioned third-party cookies are blocked
+
+Without the ability to set a cross-site cookie, `support.chat.com` could instead rely on `retail.com` passing along their first-party state (or some derived value of it).
+However, if the users have not yet created an account and the support widget is helping them sign up, then `retail.com` would have no notion of identity to forward to `support.chat.com`.
+
+`support.chat.com` could also use other methods of storage like LocalStorage or IndexedDB.
+However, like in the example above with `embed.map.com`, these methods of storage require `support.chat.com` to wait for a JavaScript context to load to access their state.
+
+Our goal is to provide services like `support.chat.com` the ability to set cookies when they are in a third-party context.
+However, that cookie is only available when the user is browsing the same top-level context that the cookie was set in.
+This allows `support.chat.com` to have a notion of session within a single top-level site without giving them a cross-site tracking mechanism.
+
 ### CDN load balancing
 
 #### Before unpartitioned third-party cookies are blocked
@@ -145,29 +179,6 @@ This means that if `static.cdn.com` sets a load balancing cookie on a browser on
 This implies that `static.cdn.com` will have to recompute the value of the load balancing cookie for each top-level site a user visits.
 However, this is preferable to blocking all cookies in third-party contexts because then `static.cdn.com` will have to compute the best way to route a request each time.
 A partitioned cookie is also more preferable for `static.cdn.com` than JavaScript storage since any data in storage would not be available until the document loads.
-
-### Headless CMS
-
-#### Before unpartitioned third-party cookies are blocked
-
-Consider the site `example.com` now wants to use a third-party [headless CMS](https://en.wikipedia.org/wiki/Headless_content_management_system), `headless.cms.com`, to store data which example.com's custom front end code uses to render their page.
-In order to tie together requests to `headless.cms.com` to a single session, their server sets a cookie:
-
-```
-Set-Cookie: __Host-SID=c78ef; SameSite=None; Secure; HttpOnly; Path=/;
-```
-
-Subsequent requests to `headless.cms.com` would include the following `Cookie` header, even when the top-level site is no longer `example.com`:
-
-```
-Cookie: __Host-SID=c78ef;
-```
-
-#### After unpartitioned third-party cookies are blocked
-
-Our goal is to give sites like `headless.cms.com` a way to set session cookies partitioned by top-level site and are available after unpartitioned third-party cookies are blocked.
-These cookies could be used to identify which requests belong to the same session within a top-level site.
-However, unlike the current state of the art, we do not want a cookie set when the top-level site is `example.com` to be sent when the browser navigates to another site.
 
 ### Other examples of use cases
 
@@ -289,7 +300,7 @@ In other words, the third-party would get a new identifier for each top-level co
 
 Below is a description of how `Partitioned` cookies can be used to meet the use cases laid out in the [Key Scenarios](#key-scenarios) section above.
 
-#### Using Partitioned for third-party embeds
+#### Third-party locator service
 
 Let us reconsider [example](#third-party-store-finder-service) of `shoes.com` and `embed.maps.com`: a locator service which wishes to use a cookie to store user preferences for their activity on `shoes.com` (e.g. their favorite store location).
 
@@ -309,7 +320,25 @@ However, when the browser navigates to a different top-level context then the br
 This gives `embed.maps.com` the capability to store users' favorite `shoes.com` store location, but those preferences would only be accessible to `embed.maps.com` when the top-level context is `shoes.com`.
 This is to ensure that `embed.maps.com` cannot use this cookie to link users' activity across different top-level contexts.
 
-#### CDN load balancing and headless CMS
+#### Third-party customer support widgets
+
+Let us also reconsider the [example](#third-party-customer-service-chat-embed) of `retail.com` which wishes to embed a third-party customer support widget, `support.chat.com`, to help users sign up for an account on their site.
+After third-party cookies are removed, `support.chat.com` can only set a cookie when the top-level context is `retail.com` if that cookie has the `Partitioned` attribute:
+
+<pre>
+Set-Cookie: __Host-coversationid=a3e70; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitioned;</b>
+</pre>
+
+When the browser's top-level context is `retail.com`, any request to `support.chat.com` would include the cookie:
+
+```
+Cookie: __Host-coversationid=a3e70;
+```
+
+...which is not available when the user navigates to a different top-level site.
+This means that the cookie cannot be used by `support.chat.com` to identify users across top-level sites.
+
+#### CDN load balancing
 
 Cookies with the `Partitioned` attribute can meet the load balancing use case for `static.cdn.com` or the session cookie for `headless.cms.com`.
 For the sake of brevity, let us only consider the load balancer use case.
@@ -322,8 +351,6 @@ Set-Cookie: __Host-lb=a3e7; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitio
 
 This cookie would only be available to `static.cdn.com` when the browser's top-level site is `example.com`.
 When the browser navigates to another top-level site, then subsequent requests to `static.cdn.com` will not include this cookie.
-
-One can extend this to the headless CMS example using the `__Host-SID` cookie described in the [Key Scenarios](#key-scenarios) section.
 
 ### How to enforce design principles
 
