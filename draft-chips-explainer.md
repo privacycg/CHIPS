@@ -1,6 +1,8 @@
 docname: draft-chips-explainer-latest
 title: CHIPS (Cookies Having Independent Partitioned State)
 
+---
+
 # CHIPS (Cookies Having Independent Partitioned State)
 
 ## Editors
