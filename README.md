@@ -69,7 +69,7 @@ This includes [phasing out support for _third-party cookies_](https://blog.chrom
 </figure></center>
 
 Although third-party cookies have the unfortunate consequence of enabling sites to track user behavior across different top-level sites, there are also use cases on the web today where cross-domain subresources require some notion of session or persistent state.
-Some examples of such use cases are [SaaS providers](https://github.com/privacycg/first-party-sets/issues/33), [headless CMS providers](https://gist.github.com/rexxars/42d870946d82a3daa0e35b238e0b7d7a), and sandbox domains for serving untrusted user content, e.g. `googleusercontent.com`, `githubusercontent.com` ([1](https://blog.kerika.com/googleusercontent-com-can-trip-you-up-if-you-disable-third-party-cookies/), [2](https://gadgetstouse.com/blog/2020/12/11/fix-google-drive-downloads-not-working-in-microsoft-edge/)).
+Some examples of such use cases are SaaS providers ([1](https://github.com/privacycg/first-party-sets/issues/33), [2](https://github.com/privacycg/storage-access/issues/74)), [headless CMS providers](https://gist.github.com/rexxars/42d870946d82a3daa0e35b238e0b7d7a), and sandbox domains for serving untrusted user content, e.g. `googleusercontent.com`, `githubusercontent.com` ([1](https://blog.kerika.com/googleusercontent-com-can-trip-you-up-if-you-disable-third-party-cookies/), [2](https://gadgetstouse.com/blog/2020/12/11/fix-google-drive-downloads-not-working-in-microsoft-edge/)).
 In these scenarios, the intention for the cookies is not to track across sites, but to provide a notion of session (or state) to embedders for a user's activity within a single top-level context.
 
 ## Key Scenarios
