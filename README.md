@@ -274,9 +274,13 @@ A cookie's partition key is the [site](https://html.spec.whatwg.org/#sites) (i.e
 Likewise, a request's partition key is the site of the top-level URL the browser is visiting at the start of a request.
 Browsers must only send a cookie with the `Partitioned` attribute in requests with the same partition key as that cookie.
 
-If the top-level site is part of a [First-Party Set](https://github.com/privacycg/first-party-sets), the third-party can share the same partition across sites within the same set.
-In this case, the partition key is the scheme of the top-level site and the owner domain of the First-Party Set.
+If the top-level site has an `https` scheme and is part of a [First-Party Set](https://github.com/privacycg/first-party-sets), the third-party can share the same partition across sites within the same set.
+In this case, the domain component of the partition key is the [owner domain](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set) of the First-Party-Set.
 This is consistent with Chrome’s [privacy principle of partitioning identity by first party](https://github.com/michaelkleber/privacy-model#identity-is-partitioned-by-first-party-site), and ensures that tracking across unrelated sites is prevented by the obsoletion of unpartitioned third-party cookies.
+
+If the top-level site has an `http` scheme, the First-Party Set feature [does not apply](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set), since it is only support for origins with an https scheme.
+
+If the top-level site has an `http` scheme, the First-Party Set feature does not apply, since all sets must contain only secure origins.
 
 ### Opt-in cookie attribute
 
@@ -532,6 +536,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [Googleusercontent.com can trip you up, if you disable third-party cookies · Kerika](https://blog.kerika.com/googleusercontent-com-can-trip-you-up-if-you-disable-third-party-cookies/)
 - [Headless CMS Github Gist · LOGIN-issues.md](https://gist.github.com/rexxars/42d870946d82a3daa0e35b238e0b7d7a)
 - [Headless content management system - Wikipedia](https://en.wikipedia.org/wiki/Headless_content_management_system)
+- [HTML Standard](https://html.spec.whatwg.org/)
 - [Intelligent Tracking Prevention 2.1 | WebKit](https://webkit.org/blog/8613/intelligent-tracking-prevention-2-1/)
 - [Isolate service workers and DOM cache by first party domain](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241)
 - [michaelkleber/privacy-model: A Potential Privacy Model for the Web: Sharding Web Identity](https://github.com/michaelkleber/privacy-model)
