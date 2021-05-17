@@ -194,7 +194,7 @@ Some other examples of use cases for partitioned cookies not listed above are:
 
 - This document also does not describe a replacement for third-party cookies that are shared across different domains owned by the same first party.
 
-- If you are using cross-site cookies between first-party domains that are in cross-site contexts, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
+- If you are using cross-site cookies between top-level domains owned by the same organization, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
 
 - This document also does not describe partitioning any other type of browser storage other than cookies (e.g. HTTP cache, LocalStorage, service workers, etc.).
 
@@ -256,7 +256,7 @@ Note: This requirement and the requirement to only use secure protocols makes pa
 
 One concern about introducing partitioned cookies is the proliferation of state on users' machines.
 With unpartitioned third-party cookies, a single third party only needed to set one cookie on a user's machines which could be used for cross-site requests across all top-level sites a user visits.
-After unpartitioned third-party cookies are removed, a third party will need to set one cookie per partition that the user visits, resulting in more cookies set on user's machines.
+After unpartitioned third-party cookies are removed, a third party will need to set one cookie per top-level context that the user visits, resulting in more cookies set on user's machines.
 
 Browsers that wish to support partitioned cookies must impose additional limitations on the number of cookies available to a third-party domain per-partition.
 
@@ -299,8 +299,8 @@ In third-party contexts, the `Partitioned` cookies would be sent in the request 
 Cookie: __Host-SID=31d4d96e407aad42
 ```
 
-Note: If this is a first-time request to the third-party with this partition key, no cookies would be sent.
-In other words, the third-party would get a new identifier for each top-level partition.
+Note: If this is a first-time request to the third-party with a different partition key, no cookies would be sent.
+In other words, the third-party would get a new identifier for each top-level context.
 
 ### Example usage
 
