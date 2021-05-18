@@ -278,9 +278,7 @@ If the top-level site has an `https` scheme and is part of a [First-Party Set](h
 In this case, the domain component of the partition key is the [owner domain](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set) of the First-Party-Set.
 This is consistent with Chrome’s [privacy principle of partitioning identity by first party](https://github.com/michaelkleber/privacy-model#identity-is-partitioned-by-first-party-site), and ensures that tracking across unrelated sites is prevented by the obsoletion of unpartitioned third-party cookies.
 
-If the top-level site has an `http` scheme, the First-Party Set feature [does not apply](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set), since it is only support for origins with an https scheme.
-
-If the top-level site has an `http` scheme, the First-Party Set feature does not apply, since all sets must contain only secure origins.
+If the top-level site has an `http` scheme, the First-Party Set feature [does not apply](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set), since it is only supported on secure origins.
 
 ### Opt-in cookie attribute
 
