@@ -26,8 +26,8 @@
     - [Only visible to the HTTP layer](#only-visible-to-the-http-layer)
     - [Avoid a large memory footprint](#avoid-a-large-memory-footprint)
 - [Detailed Design](#detailed-design)
+    - [Partitioning model](#partitioning-model)
     - [Opt-in cookie attribute](#opt-in-cookie-attribute)
-    - [Partition by top-level context](#partition-by-top-level-context)
     - [Using `Set-Cookie` with `Partitioned`](#using-set-cookie-with-partitioned)
     - [Example usage](#example-usage)
         - [Third-party locator service](#third-party-locator-service)
@@ -44,7 +44,7 @@
     - [Service workers](#service-workers)
 - [Alternative Solutions](#alternative-solutions)
     - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
-    - [Limit the number of cookies in a top-level context's partition](#limit-the-number-of-cookies-in-a-top-level-contexts-partition)
+    - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
     - [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit)
     - [Requiring the `__Secure-` prefix](#requiring-the-__secure--prefix)
     - [Not requiring the `__Host-` prefix](#not-requiring-the-__host--prefix)
@@ -70,7 +70,7 @@ This includes [phasing out support for _third-party cookies_](https://blog.chrom
 
 Although third-party cookies have the unfortunate consequence of enabling sites to track user behavior across different top-level sites, there are also use cases on the web today where cross-domain subresources require some notion of session or persistent state.
 Some examples of such use cases are SaaS providers ([1](https://github.com/privacycg/first-party-sets/issues/33), [2](https://github.com/privacycg/storage-access/issues/74)), [headless CMS providers](https://gist.github.com/rexxars/42d870946d82a3daa0e35b238e0b7d7a), and sandbox domains for serving untrusted user content, e.g. `googleusercontent.com`, `githubusercontent.com` ([1](https://blog.kerika.com/googleusercontent-com-can-trip-you-up-if-you-disable-third-party-cookies/), [2](https://gadgetstouse.com/blog/2020/12/11/fix-google-drive-downloads-not-working-in-microsoft-edge/)).
-In these scenarios, the intention for the cookies is not to track across sites, but to provide a notion of session (or state) to embedders for a user's activity within a single top-level context.
+In these scenarios, the intention for the cookies is not to track across sites, but to provide a notion of session (or state) to embedders for a user's activity within a single top-level site.
 
 ## Key Scenarios
 
@@ -137,7 +137,7 @@ However, if the users have not yet created an account and the support widget is 
 However, like in the example above with `embed.map.com`, these methods of storage require `support.chat.com` to wait for a JavaScript context to load to access their state.
 
 Our goal is to provide services like `support.chat.com` the ability to set cookies when they are in a third-party context.
-However, that cookie is only available when the user is browsing the same top-level context that the cookie was set in.
+However, that cookie is only available when the user is browsing the same top-level site that the cookie was set in.
 This allows `support.chat.com` to have a notion of session within a single top-level site without giving them a cross-site tracking mechanism.
 
 ### CDN load balancing
@@ -194,7 +194,7 @@ Some other examples of use cases for partitioned cookies not listed above are:
 
 - This document also does not describe a replacement for third-party cookies that are shared across different domains owned by the same first party.
 
-- If you are using cross-site cookies between first-party domains that may be visited in top-level context, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
+- If you are using cross-site cookies between top-level domains owned by the same organization, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
 
 - This document also does not describe partitioning any other type of browser storage other than cookies (e.g. HTTP cache, LocalStorage, service workers, etc.).
 
@@ -206,7 +206,7 @@ Under this proposal when a user visits `green.com` and embedded content from `re
 When they are visiting a new site, `blue.com`, an embedded `red.com` frame would not receive the cookie set when `red.com` was embedded in `green.com`.
 
 <center><figure>
-    <img src="./img/after.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level context.">
+    <img src="./img/after.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level site.">
     <br>
     <em>
         After CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the user visits blue.com, the red.com frame cannot access the cookie set at green.com since it was a different top-level site.
@@ -256,27 +256,35 @@ Note: This requirement and the requirement to only use secure protocols makes pa
 
 One concern about introducing partitioned cookies is the proliferation of state on users' machines.
 With unpartitioned third-party cookies, a single third party only needed to set one cookie on a user's machines which could be used for cross-site requests across all top-level sites a user visits.
-After unpartitioned third-party cookies are removed, a third party will need to set one cookie per top-level context the user visits, resulting in more cookies set on user's machines.
+After unpartitioned third-party cookies are removed, a third party will need to set one cookie per top-level context that the user visits, resulting in more cookies set on user's machines.
 
 Browsers that wish to support partitioned cookies must impose additional limitations on the number of cookies available to a third-party domain per-partition.
 
 However, it is also necessary for user agents to design these limits in a way that does not allow malicious third parties from learning cross-site information about users.
-See [Limit the number of cookies in a top-level context's partition](#limit-the-number-of-cookies-in-a-top-level-contexts-partition) for [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) in [Alternative Solutions](#alternative-solutions) for more details.
+See [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition) for [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) in [Alternative Solutions](#alternative-solutions) for more details.
 
 ## Detailed Design
 
+### Partitioning model
+
+Today, cookies are keyed on the hostname or domain of the site that set them, i.e. their _host key_.
+After CHIPS, cookies that opt into partitioning will be double-keyed on their _partition key_ and their _host key_.
+A cookie's partition key is the [site](https://html.spec.whatwg.org/#sites) (i.e. scheme and registrable domain) of the top-level URL the browser was visiting at the start of the request to the endpoint that set the cookie.
+
+Likewise, a request's partition key is the site of the top-level URL the browser is visiting at the start of a request.
+Browsers must only send a cookie with the `Partitioned` attribute in requests with the same partition key as that cookie.
+
+If the top-level site has an `https` scheme and is part of a [First-Party Set](https://github.com/privacycg/first-party-sets), the third-party can share the same partition across sites within the same set.
+In this case, the domain component of the partition key is the [owner domain](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set) of the First-Party-Set.
+This is consistent with Chrome’s [privacy principle of partitioning identity by first party](https://github.com/michaelkleber/privacy-model#identity-is-partitioned-by-first-party-site), and ensures that tracking across unrelated sites is prevented by the obsoletion of unpartitioned third-party cookies.
+
+If the top-level site has an `http` scheme, the First-Party Set feature [does not apply](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set), since it is only supported on secure origins.
+
 ### Opt-in cookie attribute
 
-We propose a new cookie attribute, `Partitioned`, which must be specified by the `Set-Cookie` header to indicate that the cookie should be stored in a per-top-level partition.
+We propose a new cookie attribute, `Partitioned`, which must be specified by the `Set-Cookie` header to indicate that the cookie should only be delivered in the same partition the cookie was set in.
 Any cookies that are not set with the `Partitioned` attribute will eventually be blocked in third-party contexts.
 (Note: Other features like the [`SameParty`](https://github.com/cfredric/sameparty) attribute may adjust the details of such blocking across domains within the same First-Party Set.)
-
-### Partition by top-level context
-
-Cookies set with the `Partitioned` attribute must only be sent to the third-party host when the user agent is in the same _top-level context_ as when the cookie was first set.
-
-For most sites, the top-level context is just the top-level site. However, when the top-level site is part of a [First-Party Set](https://github.com/privacycg/first-party-sets), the third-party can share the same partition across sites within the same set.
-This is consistent with Chrome’s [privacy principle of partitioning identity by first party](https://github.com/michaelkleber/privacy-model#identity-is-partitioned-by-first-party-site), and ensures that tracking across unrelated sites is prevented by the obsoletion of unpartitioned third-party cookies.
 
 ### Using `Set-Cookie` with `Partitioned`
 
@@ -293,12 +301,13 @@ In third-party contexts, the `Partitioned` cookies would be sent in the request 
 Cookie: __Host-SID=31d4d96e407aad42
 ```
 
-Note: If this is a first-time request to the third-party within the current top-level context, no cookies would be sent.
+Note: If this is a first-time request to the third-party with a different partition key, no cookies would be sent.
 In other words, the third-party would get a new identifier for each top-level context.
 
 ### Example usage
 
 Below is a description of how `Partitioned` cookies can be used to meet the use cases laid out in the [Key Scenarios](#key-scenarios) section above.
+For these examples, you can assume all of the resources are sent from secure origins.
 
 #### Third-party locator service
 
@@ -310,32 +319,32 @@ After third-party cookies are removed, `embed.maps.com` could no longer set a co
 Set-Cookie: __Host-locationid=187; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitioned;</b>
 </pre>
 
-When the browser's top-level context is still `shoes.com`, any subsequent request to `embed.maps.com` would include the following header:
+Any subsequent request to `embed.maps.com` whose partition key's domain is `shoes.com` would include the following header:
 
 ```
 Cookie: __Host-locationid=187;
 ```
 
-However, when the browser navigates to a different top-level context then the browser would not send the `Cookie` header above to `embed.maps.com`.
-This gives `embed.maps.com` the capability to store users' favorite `shoes.com` store location, but those preferences would only be accessible to `embed.maps.com` when the top-level context is `shoes.com`.
-This is to ensure that `embed.maps.com` cannot use this cookie to link users' activity across different top-level contexts.
+However, when the browser navigates to a different site, the browser would not send the `Cookie` header above to `embed.maps.com`.
+This gives `embed.maps.com` the capability to store users' favorite `shoes.com` store location, but those preferences would only be accessible to `embed.maps.com` when the top-level site is `shoes.com`.
+This is to ensure that `embed.maps.com` cannot use this cookie to link users' activity across different top-level sites.
 
 #### Third-party customer support widgets
 
 Let us also reconsider the [example](#third-party-customer-service-chat-embed) of `retail.com` which wishes to embed a third-party customer support widget, `support.chat.com`, to help users sign up for an account on their site.
-After third-party cookies are removed, `support.chat.com` can only set a cookie when the top-level context is `retail.com` if that cookie has the `Partitioned` attribute:
+After third-party cookies are removed, `support.chat.com` can only set a cookie when the top-level site is `retail.com` if that cookie has the `Partitioned` attribute:
 
 <pre>
 Set-Cookie: __Host-coversationid=a3e70; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitioned;</b>
 </pre>
 
-When the browser's top-level context is `retail.com`, any request to `support.chat.com` would include the cookie:
+Any request to `support.chat.com` whose partition key's domain is `retail.com` would include the cookie:
 
 ```
 Cookie: __Host-coversationid=a3e70;
 ```
 
-...which is not available when the user navigates to a different top-level site.
+When the user navigates to a different top-level site, any request to `support.chat.com` would have a different partition key, so the cookie above would not be available.
 This means that the cookie cannot be used by `support.chat.com` to identify users across top-level sites.
 
 #### CDN load balancing
@@ -432,13 +441,13 @@ Partitioning by default also has more implementation complexity for browser deve
 Supporting opt-in cookie partitioning while gradually moving the web off of globally-scoped third-party cookies will help ease the transition for browsers.
 
 There is also the issue of state proliferation.
-There are some third-party origins on the web today that are prevalent across many top-level contexts.
+There are some third-party origins on the web today that are prevalent across many partitions.
 If we partition the cookie jar by default and do not include a new upper bound on the size of each cookie jar partition, device storage limits will be exhausted more quickly.
 
-### Limit the number of cookies in a top-level context's partition
+### Limit the number of cookies in a partition
 
-One additional limitation user agents may also enforce is to limit the number of cookies in a top-level context's partition across all third-party domains as well.
-This limit would prevent a single top-level context's partition from taking up too much space in the cookie jar.
+One additional limitation user agents may also enforce is to limit the number of cookies in a partition across all third-party domains as well.
+This limit would prevent a single partition from taking up too much space in the cookie jar.
 
 We chose not to enforce a global per-partition limit is that it would open a side channel for a third party to learn if another, distinct third party set a cookie within the same top-level context.
 
@@ -525,6 +534,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [Googleusercontent.com can trip you up, if you disable third-party cookies · Kerika](https://blog.kerika.com/googleusercontent-com-can-trip-you-up-if-you-disable-third-party-cookies/)
 - [Headless CMS Github Gist · LOGIN-issues.md](https://gist.github.com/rexxars/42d870946d82a3daa0e35b238e0b7d7a)
 - [Headless content management system - Wikipedia](https://en.wikipedia.org/wiki/Headless_content_management_system)
+- [HTML Standard](https://html.spec.whatwg.org/)
 - [Intelligent Tracking Prevention 2.1 | WebKit](https://webkit.org/blog/8613/intelligent-tracking-prevention-2-1/)
 - [Isolate service workers and DOM cache by first party domain](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241)
 - [michaelkleber/privacy-model: A Potential Privacy Model for the Web: Sharding Web Identity](https://github.com/michaelkleber/privacy-model)
