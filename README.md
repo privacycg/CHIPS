@@ -190,11 +190,9 @@ Some other examples of use cases for partitioned cookies not listed above are:
 
 ## Non-goals
 
-- This document does not describe any changes to how a top-level site interacts with its own site's cookies.
+- This document does not describe any changes to how a top-level site interacts with its own cookies.
 
-- This document also does not describe a replacement for third-party cookies that are shared across different domains owned by the same first party.
-
-- If you are using cross-site cookies between top-level domains owned by the same organization, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
+- This document does not describe a replacement for third-party cookies that are shared across different domains owned by the same first organization. For this use case, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
 
 - This document also does not describe partitioning any other type of browser storage other than cookies (e.g. HTTP cache, LocalStorage, service workers, etc.).
 
