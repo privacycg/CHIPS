@@ -7,7 +7,7 @@
 
 ## Participate
 
-- https://github.com/DCtheTall/CHIPS/issues
+- https://github.com/WICG/CHIPS/issues
 
 ## Table of Contents
 
