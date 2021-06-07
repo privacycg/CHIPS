@@ -397,13 +397,14 @@ This is to ensure that as a user visits more top-level sites over time that the 
 
 ### Clearing partitioned cookies
 
-If a top-level site sends `Clear-Site-Data`, then the user agent clears all partitioned cookies available to third-parties from that site as well.
-
 If a third-party site sends `Clear-Site-Data`, then the user agent should clear all cookies available to that third-party in the partition for the current top-level site alone.
 The user agent must not clear the third-party's cookies in other partitions.
 This is to prevent abuse of such a capability as a cross-site tracking vector as [described here](https://github.com/privacycg/storage-partitioning/issues/11).
 
 Browsers may choose to provide user controls to clear individual partitions of a site’s cookies.
+
+Top-level sites should not be able to clear the third-parties' cookies in their partition.
+This would provide a potential attack vector for top-level sites to interfere with code running in third-party frames.
 
 ### Handling older or incompatible clients
 
