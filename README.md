@@ -403,7 +403,8 @@ This is to prevent abuse of such a capability as a cross-site tracking vector as
 
 Browsers may choose to provide user controls to clear individual partitions of a site’s cookies.
 
-Top-level sites should not be able to clear the third-parties' cookies in their partition. This would provide a side channel for top-level sites to interfere with code running in third-party frames.
+Top-level sites should not be able to clear the third-parties' cookies in their partition.
+This would provide a potential attack vector for top-level sites to interfere with code running in third-party frames.
 
 ### Handling older or incompatible clients
 
