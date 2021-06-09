@@ -427,7 +427,7 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 [Service workers are disabled](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning) in Firefox when Dynamic Partitioning is enabled, but they are [working on implementing a partitioned service worker solution](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241).
 
-## Security and Considerations
+## Security and Privacy Considerations
 
 ### Security
 
