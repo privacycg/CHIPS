@@ -429,8 +429,6 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 ## Security and Privacy Considerations
 
-### Security
-
 This proposal offers a small security improvement over third-party/cross-site cookies as currently available on the platform, because the new partitioned cookies require the `__Host-` prefix and `Secure` attribute.
 This proposal offers a significant privacy improvement over third-party cookies, because it removes a cross-site tracking vector while allowing third-parties to maintain some notion of session/state.
 
