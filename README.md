@@ -43,8 +43,6 @@
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
     - [Service workers](#service-workers)
 - [Security and Privacy Considerations](#security-and-privacy-considerations)
-    - [Security](#security)
-    - [Privacy](#privacy)
 - [Alternative Solutions](#alternative-solutions)
     - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
@@ -433,23 +431,8 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 ### Security
 
-Partitioned cookies' [design principles](#design-principles) state that `Partitioned` cookies should only be sent over secure protocols in order to address cookies' [weak confidentiality](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-07#section-8.5) and [weak integrity](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-07#section-8.6).
-User agents must enforce this by only accepting `Partitioned` cookies that have the `__Host-` prefix, since the prefix requires cookies also have the `Secure` attribute.
-
-We also think `Partitioned` cookies should only be visible to the HTTP layer, which makes them less vulnerable to security vulnerabilities such as XSS-attacks.
-However, we are less inclined to require that user agents only accept `Partitioned` cookies if they have the `HttpOnly` attribute, since there may be use cases for cross-site cookies in scripts that are restricted to a user's activity within a single top-level site.
-
-As discussed in [Clearing Partitioned Cookies](#clearing-partitioned-cookies), we should not give top-level sites the ability to clear embeds' cookies in their own partition.
-Doing so would introduce a potential attack vector that would allow top-level sites to interfere with code running in embedded frames.
-
-### Privacy
-
-Currently, the only way third parties can use cookies is by storing an unpartitioned `SameSite=None` cookie which is globally accessible for the third-party domain across any top-level site.
-The primary goal of CHIPS is to introduce a mechanism where third-party embeds can still use cookies, but those cookies will only be available in the same top-level site that they are set in.
-
-Given that goal, it is important that we design `Partitioned` cookies in a way that prevents them from becoming a side channel for cross-site tracking.
-For example, `Partitioned` cookies should not be subject to the 180 per-domain cookie limit, since applying this limit to `Partitioned` cookies could introduce a potential vector for cross-site tracking.
-For more discussion of this particular issue, see [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) for more discussion about this particular side channel.
+This proposal offers a small security improvement over third-party/cross-site cookies as currently available on the platform, because they require the `__Host-` prefix and `Secure` attribute.
+This proposal offers a significant privacy improvement over third-party cookies, because it removes a cross-site tracking vector while allowing third-parties to maintain some notion of session/state.
 
 ## Alternative Solutions
 
