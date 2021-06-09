@@ -429,7 +429,8 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 ## Security and Privacy Considerations
 
-This proposal offers a small security improvement over third-party/cross-site cookies as currently available on the platform, because the new partitioned cookies require the `__Host-` prefix and `Secure` attribute.
+This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts/#security-considerations).
+
 This proposal offers a significant privacy improvement over third-party cookies, because it removes a cross-site tracking vector while allowing third-parties to maintain some notion of session/state.
 
 ## Alternative Solutions
@@ -548,6 +549,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [privacycg/first-party-sets](https://github.com/privacycg/first-party-sets)
 - [SameSite=None: Known Incompatible Clients - The Chromium Projects](https://www.chromium.org/updates/same-site/incompatible-clients)
 - [sbingler/Origin-Bound-Cookies](https://github.com/sbingler/Origin-Bound-Cookies)
+- [Secure Contexts](https://w3c.github.io/webappsec-secure-contexts/#security-considerations)
 - [Software as a service use case for FPS · Issue #33 · privacycg/first-party-sets](https://github.com/privacycg/first-party-sets/issues/33)
 - [State Partitioning - Mozilla | MDN](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning)
 - [View Source shows source code of login page instead of current webpage on local django server](https://bugzilla.mozilla.org/show_bug.cgi?id=1651134)
