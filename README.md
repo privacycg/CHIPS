@@ -433,6 +433,8 @@ This proposal takes the opportunity of defining the semantics of a new cookie at
 
 This proposal offers a significant privacy improvement over third-party cookies, because it removes a cross-site tracking vector while allowing third-parties to maintain some notion of session/state.
 
+One important privacy consideration is that partitioned cookies must not be subject to the 180 per-domain cookie limit, otherwise they risk introducing a side channel for cross-site tracking described in [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit).
+
 ## Alternative Solutions
 
 ### Partition all third-party cookies by default
