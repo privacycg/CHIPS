@@ -431,8 +431,8 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts/#security-considerations).
 
-This proposal offers a pathway towards a signficiant privacy improvement for the web by removing third-party cookies.
-This proposal suggests an alternate design for cross-site cookies which does not introduce a vector for cross-site tracking.
+The proposal suggests an alternate design for cross-site cookies which does not introduce a vector for cross-site tracking.
+This is a step towards making a larger privacy improvement for the web: removing third-party cookies.
 
 One important privacy consideration is that partitioned cookies must not be subject to the 180 per-domain cookie limit, otherwise they risk introducing a side channel for cross-site tracking described in [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit).
 
