@@ -431,6 +431,12 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts/#security-considerations).
 
+Sites are more prone to XSS attacks as embedded frames since these contexts rely on cross-site cookies for a notion of user session/state.
+Partitioning cross-site cookies makes XSS attacks less powerful, since an attacker would need to navigate the user's browser to a compromised cookie's top-level site in order for the browser to send the cookie at all.
+
+Partitioning cross-site cookies inevitably will lead to more state proliferation on user's machines, so there is a possible DoS risk from partitioning cross-site cookies where a malicious embedded site could set many cookies across different partitions to take up memory on clients' machines.
+See [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition) for more information on how this proposal addresses this concern.
+
 The proposal suggests an alternate design for cross-site cookies which does not introduce a vector for cross-site tracking.
 This is a step towards making a larger privacy improvement for the web: removing third-party cookies.
 
