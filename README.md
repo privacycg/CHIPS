@@ -42,6 +42,7 @@
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
     - [Service workers](#service-workers)
+- [Security and Privacy Considerations](#security-and-privacy-considerations)
 - [Alternative Solutions](#alternative-solutions)
     - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
@@ -426,6 +427,21 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 [Service workers are disabled](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning) in Firefox when Dynamic Partitioning is enabled, but they are [working on implementing a partitioned service worker solution](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241).
 
+## Security and Privacy Considerations
+
+This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts).
+
+Sites are more prone to XSS attacks as embedded frames since these contexts rely on cross-site cookies for a notion of user session/state.
+Partitioning cross-site cookies makes XSS attacks less powerful, since an attacker would need to navigate the user's browser to a compromised cookie's top-level site in order for the browser to send the cookie at all.
+
+Partitioning cross-site cookies inevitably will lead to more state proliferation on user's machines, so there is a possible DoS risk from partitioning cross-site cookies where a malicious embedded site could set many cookies across different partitions to take up memory on clients' machines.
+See [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition) for more information on how this proposal addresses this concern.
+
+The proposal suggests an alternate design for cross-site cookies which does not introduce a vector for cross-site tracking.
+This is a step towards making a larger privacy improvement for the web: removing third-party cookies.
+
+One important privacy consideration is that partitioned cookies must not be subject to the 180 per-domain cookie limit, otherwise they risk introducing a side channel for cross-site tracking described in [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit).
+
 ## Alternative Solutions
 
 ### Partition all third-party cookies by default
@@ -542,6 +558,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [privacycg/first-party-sets](https://github.com/privacycg/first-party-sets)
 - [SameSite=None: Known Incompatible Clients - The Chromium Projects](https://www.chromium.org/updates/same-site/incompatible-clients)
 - [sbingler/Origin-Bound-Cookies](https://github.com/sbingler/Origin-Bound-Cookies)
+- [Secure Contexts](https://w3c.github.io/webappsec-secure-contexts)
 - [Software as a service use case for FPS · Issue #33 · privacycg/first-party-sets](https://github.com/privacycg/first-party-sets/issues/33)
 - [State Partitioning - Mozilla | MDN](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning)
 - [View Source shows source code of login page instead of current webpage on local django server](https://bugzilla.mozilla.org/show_bug.cgi?id=1651134)
