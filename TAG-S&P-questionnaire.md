@@ -100,5 +100,7 @@ The goal of this proposal is for cross-site contexts to be able to observe a use
 ### 3.5. Legitimate Misuse
 
 A malicious third party may wish to use partitioned cookies to store a global user identifier that persists across multiple top-level domains.
-This identifier could be repeatedly derived on each top-level site a user visits using some side channel.
+This identifier could be repeatedly derived on each top-level site a user visits using some side channel or fingerprinting techniques.
 Afterwards the third-party can store this identifier in a partitioned cookie so that when the user returns to each top-level site with the third-party embed, they no longer need to use the side channel to derive the cross-site identifier again.
+
+Though partitioned cookies could introduce a new place for third parties to store a derived cross-site identifier, a third-party script running in a top-level context could store still store a cross-site identifier in the top-level site's cookie jar.
