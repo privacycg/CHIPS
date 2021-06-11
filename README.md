@@ -429,7 +429,7 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 ## Security and Privacy Considerations
 
-This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts/#security-considerations).
+This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts).
 
 Sites are more prone to XSS attacks as embedded frames since these contexts rely on cross-site cookies for a notion of user session/state.
 Partitioning cross-site cookies makes XSS attacks less powerful, since an attacker would need to navigate the user's browser to a compromised cookie's top-level site in order for the browser to send the cookie at all.
@@ -558,7 +558,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [privacycg/first-party-sets](https://github.com/privacycg/first-party-sets)
 - [SameSite=None: Known Incompatible Clients - The Chromium Projects](https://www.chromium.org/updates/same-site/incompatible-clients)
 - [sbingler/Origin-Bound-Cookies](https://github.com/sbingler/Origin-Bound-Cookies)
-- [Secure Contexts](https://w3c.github.io/webappsec-secure-contexts/#security-considerations)
+- [Secure Contexts](https://w3c.github.io/webappsec-secure-contexts)
 - [Software as a service use case for FPS · Issue #33 · privacycg/first-party-sets](https://github.com/privacycg/first-party-sets/issues/33)
 - [State Partitioning - Mozilla | MDN](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning)
 - [View Source shows source code of login page instead of current webpage on local django server](https://bugzilla.mozilla.org/show_bug.cgi?id=1651134)
