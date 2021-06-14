@@ -434,8 +434,8 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 #### Extension pages
 
-When extension pages can load subresources from other sites, the partition key used to determine which `Partitioned` cookies should be included in requests should be the scheme and domain of the topmost-level frame which is *not* an extension URL.
-If a subresource request is from the extension page's top-level frame, then the partition key is the scheme and domain of the site of the subresource URL.
+When extension pages load subresources from other sites, the partition key used to determine which `Partitioned` cookies should be included in requests must be the site of the topmost-level frame which is *not* an extension URL.
+If a subresource request is from the extension page's top-level frame, then the partition key is the site of the subresource URL.
 
 #### Background contexts
 
@@ -460,7 +460,7 @@ This is a step towards making a larger privacy improvement for the web: removing
 
 One important privacy consideration is that partitioned cookies must not be subject to the 180 per-domain cookie limit, otherwise they risk introducing a side channel for cross-site tracking described in [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit).
 
-Another important privacy consideration is that the privacy guarantees of partitioned cookies can be circumvented by browser extensions with host permissions.
+Another privacy consideration is that the privacy guarantees of partitioned cookies can be circumvented by browser extensions with host permissions.
 Extensions' background contexts can query and store cookies across partitions, meaning they could store a cross-site identifier across partitions.
 Unfortuately, this type of attack is unavoidable due to the nature of extensions.
 Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still read their site's partitioned cookie jar using content scripts which read or write cookies to the DOM which the site's own script could copy the result to the browser's cookie jar.
