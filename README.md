@@ -463,7 +463,7 @@ One important privacy consideration is that partitioned cookies must not be subj
 Another privacy consideration is that the privacy guarantees of partitioned cookies can be circumvented by browser extensions with host permissions.
 Extensions' background contexts can query and store cookies across partitions, meaning they could store a cross-site identifier across partitions.
 Unfortuately, this type of attack is unavoidable due to the nature of extensions.
-Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still read their site's partitioned cookie jar using content scripts which read or write cookies to the DOM which the site's own script could copy the result to the browser's cookie jar.
+Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still read their site's partitioned cookie jar using content scripts which read or write cookies to the DOM which the site's own script could copy to the browser's cookie jar.
 
 ## Alternative Solutions
 
