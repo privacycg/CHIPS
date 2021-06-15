@@ -437,8 +437,8 @@ Partitioning cross-site cookies makes XSS attacks less powerful, since an attack
 Partitioning cross-site cookies inevitably will lead to more state proliferation on user's machines, so there is a possible DoS risk from partitioning cross-site cookies where a malicious embedded site could set many cookies across different partitions to take up memory on clients' machines.
 See [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition) for more information on how this proposal addresses this concern.
 
-Cross-site cookies with the `Partitioned` attribute are less susceptible to CSRF attacks than unpartitioned third-party cookies.
-This is because a `Partitioned` cookie is only sent in requests when the browser is visiting the top-level site the cookie was created in, meaning an attacker will not be able to forge a request with a `Partitioned` cookie on their own top-level domain.
+Cross-site cookies with the `Partitioned` attribute are less susceptible to CSRF attacks than unpartitioned, third-party cookies.
+This is because a `Partitioned` cookie is only sent in requests when the browser is visiting the top-level site the cookie was created in, meaning a malicious top-level site will not be able to forge a request with an existing `Partitioned` cookie.
 
 The proposal suggests an alternate design for cross-site cookies which does not introduce a vector for cross-site tracking.
 This is a step towards making a larger privacy improvement for the web: removing third-party cookies.
