@@ -434,8 +434,8 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 #### Extension pages
 
-When extension pages load subresources from other sites, the partition key used to determine which `Partitioned` cookies should be included in requests must be the site of the topmost-level frame which is *not* an extension URL.
-If a subresource request is from the extension page's top-level frame, then the partition key is the site of the subresource URL.
+When extension pages load subresources from other sites, the partition key used to determine which `Partitioned` cookies should be included in requests must be the site of the topmost-level frame which is *not* an extension URL if the extension has host permissions for that frame, otherwise the partition key should be the extension URL.
+If a subresource request is from the extension page's top-level frame, then the partition key is the site of the subresource URL if the extension has host permissions for that site, otherwise it should be the extension URL.
 
 #### Background contexts
 
@@ -463,7 +463,7 @@ One important privacy consideration is that partitioned cookies must not be subj
 Another privacy consideration is that the privacy guarantees of partitioned cookies can be circumvented by browser extensions with host permissions.
 Extensions' background contexts can query and store cookies across partitions, meaning they could store a cross-site identifier across partitions.
 Unfortuately, this type of attack is unavoidable due to the nature of extensions.
-Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still read their site's partitioned cookie jar using content scripts which read or write cookies to the DOM which the site's own script could copy to the browser's cookie jar.
+Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still read their site's partitioned cookie jar using content scripts which can write cross-site identifiers to the DOM which the site's own script could copy to the site's partitioned cookie jar.
 
 ## Alternative Solutions
 
