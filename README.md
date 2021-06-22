@@ -42,6 +42,9 @@
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
     - [Service workers](#service-workers)
+    - [Browser extensions](#browser-extensions)
+        - [Extension pages](#extension-pages)
+        - [Background contexts](#background-contexts)
 - [Security and Privacy Considerations](#security-and-privacy-considerations)
 - [Alternative Solutions](#alternative-solutions)
     - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
@@ -427,6 +430,21 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 [Service workers are disabled](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning) in Firefox when Dynamic Partitioning is enabled, but they are [working on implementing a partitioned service worker solution](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241).
 
+### Browser extensions
+
+#### Extension pages
+
+When extension pages load subresources from other sites, the partition key used to determine which `Partitioned` cookies should be included in requests must be the site of the topmost-level frame which is *not* an extension URL if the extension has host permissions for that frame, otherwise the partition key should be the extension URL.
+If a subresource request is from the extension page's top-level frame, then the partition key is the site of the subresource URL if the extension has host permissions for that site, otherwise it should be the extension URL.
+
+#### Background contexts
+
+Extensions in some browsers are capable of reading cookies (for sites they have host permission) in background contexts using a JavaScript API (e.g. [Chrome](https://developer.chrome.com/docs/extensions/reference/cookies/), [Firefox](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/cookies)).
+We propose to give extensions the ability to select which partition key to use when loading cookies by supplying a `partitionKey` string parameter that would let extensions specify which partition to load their sites' `Partitioned` cookies from and in which partition they can save cookies for their site.
+
+It is worth noting that by allowing extension background contexts to load cookies across different partitions allows extensions to use partitioned cookies to store cross-site identifiers.
+This problem is discussed further in [Security and Privacy Considerations](#security-and-privacy-considerations).
+
 ## Security and Privacy Considerations
 
 This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts).
@@ -441,6 +459,11 @@ The proposal suggests an alternate design for cross-site cookies which does not 
 This is a step towards making a larger privacy improvement for the web: removing third-party cookies.
 
 One important privacy consideration is that partitioned cookies must not be subject to the 180 per-domain cookie limit, otherwise they risk introducing a side channel for cross-site tracking described in [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit).
+
+Another privacy consideration is that the privacy guarantees of partitioned cookies can be circumvented by browser extensions with host permissions.
+Extensions' background contexts can query and store cookies across partitions, meaning they could store a cross-site identifier across partitions.
+Unfortuately, this type of attack is unavoidable due to the nature of extensions.
+Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still use content scripts to write cross-site identifiers to the DOM which the site's own script could copy to the site's partitioned cookie jar.
 
 ## Alternative Solutions
 
