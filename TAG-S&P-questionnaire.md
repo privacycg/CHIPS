@@ -7,7 +7,8 @@ Questions from w3.org/TR/security-privacy-questionnaire
 ### 2.1. What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
 If unpartitioned third-party cookies are still in use, this feature does not expose any additional information that is not already available if sites were already using an unpartitioned cross-site cookie.
-If unpartitioned third-party cookies are blocked, this provides sites in third-party contexts the ability to use HTTP cookies that are scoped to a single top-level site.
+If unpartitioned third-party cookies are blocked, this provides sites in third-party contexts the ability to save information across visits, within the scope of a single top-level site.
+Without partitioned cookies, blocking third-party cookies would also break non-tracking-related use cases of cross-site cookies (e.g. CDN load balancing cookies).
 
 ### 2.2. Is this specification exposing the minimum amount of information necessary to power the feature?
 
@@ -15,9 +16,13 @@ Yes. This proposal gives the ability for third-party contexts the ability to use
 
 ### 2.3. How does this specification deal with personal information or personally-identifiable information or information derived thereof?
 
-This proposal requires that cookies which use the Partitioned attribute also have the __Host- prefix.
+Servers may store PII in a cookie or set a unique ID which is associated with user PII on the backend, so it is important to protect cookies' content from passive network attackers.
+
+In order to prevent PII from leaking, this proposal requires that cookies which use the Partitioned attribute also have the __Host- prefix.
 This prefix requires cookies be hostname scoped and can only be used in [secure contexts](https://www.w3.org/TR/secure-contexts/).
 The latter requirement protects these cookies from sending PII in plaintext between clients and servers.
+
+Also it is worth mentioning that if a partitioned cookie does contain PII, that information will only be sent when the browser is on the same top-level site that the cookie was first created in, instead of any site which makes a request to the cookie's host/domain.
 
 ### 2.4. How does this specification deal with sensitive information?
 
@@ -27,7 +32,7 @@ See 2.3.
 
 This proposal extends an existing state mechanism that persists across browsing sessions.
 It imposes different types of size limitations on these types of cookies in order to prevent them from being abused as a cross-site tracking vector.
-For more information for this type of attack, see this section of the explainer.
+For more information for this type of attack, see [this section](https://github.com/WICG/CHIPS#applying-the-180-cookies-per-domain-limit) of the explainer.
 
 ### 2.6. What information from the underlying platform, e.g. configuration data, is exposed by this specification to an origin?
 
@@ -37,7 +42,7 @@ This feature should not reveal any additional information about the user's under
 
 No.
 
-### 2.8. What data does thisi UI specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts.
+### 2.8. What data do the features in this specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts.
 
 Partitioned cookies do not expose any additional information to an origin that unpartitioned cross-site cookies do not already.
 Instead, that same data is now scoped to the top-level site instead of being available across different top-level contexts.
@@ -90,17 +95,19 @@ See 3.1.
 
 ### 3.3. Same-Origin Policy Violations
 
-None.
+By requiring the __Host- prefix, this proposal makes partitioned cookies scheme- and hostname-bound.
+However, even cookies with the __Host- prefix can still be sent to different ports (though this may change if [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled).
 
 ### 3.4. Third-Party Tracking
 
 Partitioning cross-site cookies by top-level site is meant to reduce (or eliminate) third parties' ability to use cookies as a cross-site identifier.
-The goal of this proposal is for cross-site contexts to be able to observe a user's activity only within a single top-level site.
+The goal of this proposal is for cross-site contexts to be able to associate a user's activity only within a single top-level site.
 
 ### 3.5. Legitimate Misuse
 
-A malicious third party may wish to use partitioned cookies to store a global user identifier that persists across multiple top-level domains.
+A third party may wish to use partitioned cookies to store a global user identifier that persists across multiple top-level domains.
 This identifier could be repeatedly derived on each top-level site a user visits using some side channel or fingerprinting techniques.
 Afterwards the third-party can store this identifier in a partitioned cookie so that when the user returns to each top-level site with the third-party embed, they no longer need to use the side channel to derive the cross-site identifier again.
 
-Though partitioned cookies could introduce a new place for third parties to store a derived cross-site identifier, a third-party script running in a top-level context could store still store a cross-site identifier in the top-level site's cookie jar.
+Though partitioned cookies could introduce a new place for third parties to store a derived cross-site identifier, a third-party script running in a top-level context could still store a cross-site identifier in the top-level site's cookie jar.
+Also, there are proposals for identifiers (e.g. [UID2.0](https://www.thetradedesk.com/us/knowledge-center/what-the-tech-is-unified-id-2-0)) which may disincentivize third parties from using partitioned cookies as a replacement to third-party cookies for cross-site tracking.
