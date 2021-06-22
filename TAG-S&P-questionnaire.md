@@ -14,6 +14,9 @@ Without partitioned cookies, blocking third-party cookies would also break non-t
 
 Yes. This proposal gives the ability for third-party contexts the ability to use a familiar HTTP state primitive for use cases restricted to a users' activity in only the current top-level site.
 
+An alternative to cookies, [HTTP State Tokens](https://github.com/mikewest/http-state-tokens), could also meet some of these use cases and exposes less information to sites since they have a smaller size and are client-generated.
+However, since State Tokens are a significant paradigm shift from cookies, they would require too much developer effort to adopt.
+
 ### 2.3. How does this specification deal with personal information or personally-identifiable information or information derived thereof?
 
 Servers may store PII in a cookie or set a unique ID which is associated with user PII on the backend, so it is important to protect cookies' content from passive network attackers.
