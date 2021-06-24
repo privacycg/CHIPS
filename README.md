@@ -486,7 +486,7 @@ If we partition the cookie jar by default and do not include a new upper bound o
 
 ### Use Storage Access API for opt-in
 
-More recently, there was a [proposal](https://github.com/privacycg/storage-access/issues/75) for opt-in partitioned cookies, but instead of using a cookie attribute users would opt-in to giving third parties a partitioned cookie jar using the Storage Access API.
+At the time of writing there is a [proposal](https://github.com/privacycg/storage-access/issues/75) under discussion for opt-in partitioned cookies, but instead of using a cookie attribute users would opt-in to giving third parties a partitioned cookie jar using the Storage Access API.
 
 ## Alternate Designs for CHIPS
 
