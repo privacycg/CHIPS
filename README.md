@@ -46,8 +46,10 @@
         - [Extension pages](#extension-pages)
         - [Background contexts](#background-contexts)
 - [Security and Privacy Considerations](#security-and-privacy-considerations)
-- [Alternative Solutions](#alternative-solutions)
+- [Alternate Cookie Partitioning Designs](#alternate-cookie-partitioning-designs)
     - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
+    - [Use Storage Access API for opt-in](#use-storage-access-api-for-opt-in)
+- [Alternate Designs for CHIPS](#alternate-designs-for-chips)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
     - [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit)
     - [Requiring the `__Secure-` prefix](#requiring-the-__secure--prefix)
@@ -263,7 +265,7 @@ After unpartitioned third-party cookies are removed, a third party will need to 
 Browsers that wish to support partitioned cookies must impose additional limitations on the number of cookies available to a third-party domain per-partition.
 
 However, it is also necessary for user agents to design these limits in a way that does not allow malicious third parties from learning cross-site information about users.
-See [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition) for [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) in [Alternative Solutions](#alternative-solutions) for more details.
+See [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition) for [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit) in [Alternative Designs for CHIPS](#alternative-designs-for-chips) for more details.
 
 ## Detailed Design
 
@@ -465,7 +467,7 @@ Extensions' background contexts can query and store cookies across partitions, m
 Unfortuately, this type of attack is unavoidable due to the nature of extensions.
 Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still use content scripts to write cross-site identifiers to the DOM which the site's own script could copy to the site's partitioned cookie jar.
 
-## Alternative Solutions
+## Alternate Cookie Partitioning Designs
 
 ### Partition all third-party cookies by default
 
@@ -481,6 +483,12 @@ Supporting opt-in cookie partitioning while gradually moving the web off of glob
 There is also the issue of state proliferation.
 There are some third-party origins on the web today that are prevalent across many partitions.
 If we partition the cookie jar by default and do not include a new upper bound on the size of each cookie jar partition, device storage limits will be exhausted more quickly.
+
+### Use Storage Access API for opt-in
+
+At the time of writing there is a [proposal](https://github.com/privacycg/storage-access/issues/75) under discussion for opt-in partitioned cookies, but instead of using a cookie attribute users would opt-in to giving third parties a partitioned cookie jar using the Storage Access API.
+
+## Alternate Designs for CHIPS
 
 ### Limit the number of cookies in a partition
 
@@ -575,6 +583,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [HTML Standard](https://html.spec.whatwg.org/)
 - [Intelligent Tracking Prevention 2.1 | WebKit](https://webkit.org/blog/8613/intelligent-tracking-prevention-2-1/)
 - [Isolate service workers and DOM cache by first party domain](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241)
+- [Let embedees optionally request access to partitioned cookies and storage · Issue #75 · privacycg/storage-access](https://github.com/privacycg/storage-access/issues/75)
 - [michaelkleber/privacy-model: A Potential Privacy Model for the Web: Sharding Web Identity](https://github.com/michaelkleber/privacy-model)
 - [mikewest/http-state-tokens: Incrementally better HTTP state management.](https://github.com/mikewest/http-state-tokens)
 - [Principle of least privilege - Wikipedia](https://en.wikipedia.org/wiki/Principle_of_least_privilege)
