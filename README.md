@@ -353,10 +353,7 @@ This means that the cookie cannot be used by `support.chat.com` to identify user
 
 #### CDN load balancing
 
-Cookies with the `Partitioned` attribute can meet the load balancing use case for `static.cdn.com` or the session cookie for `headless.cms.com`.
-For the sake of brevity, let us only consider the load balancer use case.
-
-When the user visits example.com and static.cdn.com wants to set a cookie storing the result of computing the best way to direct this particular user's requests. They could do so using the Partitioned attribute using the following Set-Cookie header:
+When the user visits example.com and `static.cdn.com` wants to set a cookie storing the result of computing the best way to direct this particular user's requests. They could do so using the `Partitioned` attribute using the following Set-Cookie header:
 
 <pre>
 Set-Cookie: __Host-lb=a3e7; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitioned;</b>
