@@ -309,7 +309,7 @@ This algorithm could be added to [section 5.3 of RFC6265bis](https://datatracker
 
 1.  If an attribute-name case-insensitively matches the string `"Partitioned"` then "partition-key" should be the [site](https://html.spec.whatwg.org/#sites) of the top-level document when the user agent made the request.
 
-    1. If the top-level document's site is in a [First-Party Set](https://github.com/privacycg/first-party-sets), then "partition-key" is the concatenation of "https://" and the "owner domain" of the site's First-Party Set.
+    1. If the top-level document's site is in a [First-Party Set](https://github.com/privacycg/first-party-sets), then "partition-key" is the concatenation of "https://" and the "owner domain" of the site's set.
 
 1.  Append an attribute to the cookie-attribute-list with an attribute-name of "PartitionKey" and an attribute-value of "partition-key".
 
@@ -324,7 +324,7 @@ These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ie
 
 1.  Set the cookie's partition-key to the attribute-value of the element in the attribute-list whose attribute-name is "PartitionKey".
 
-Also, we would modify the first part of step 19 of the algorithm in step 5.4 to also include the partition-key in the list of cookie attributes to check, so that two cookies with the same name, domain, host-only-flag, and path can coexist in the cookie store if their partition-key differs.
+Also, we would modify the first part of step 19 of the algorithm in step 5.4 to also include the partition-key in the list of cookie attributes to check, so that two cookies with the same name, domain, host-only-flag, and path can coexist in the cookie store if their partition-key values differ.
 
 ### Attaching a `Partitioned` cookie to a request
 
