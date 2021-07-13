@@ -29,6 +29,7 @@
     - [Partitioning model](#partitioning-model)
     - [Opt-in cookie attribute](#opt-in-cookie-attribute)
     - [Using `Set-Cookie` with `Partitioned`](#using-set-cookie-with-partitioned)
+    - [Attaching a `Partitioned` cookie to a request](#attaching-a-partitioned-cookie-to-a-request)
     - [Example usage](#example-usage)
         - [Third-party locator service](#third-party-locator-service)
         - [Third-party customer support widgets](#third-party-customer-support-widgets)
@@ -299,6 +300,34 @@ Set-Cookie: __Host-SID=31d4d96e407aad42; SameSite=None; Secure; HttpOnly; Path=/
 Set-Cookie: abc=21ef; SameSite=None; Secure // blocked in 3p contexts
 </pre>
 
+#### Algorithm
+
+Below is the algorithm that browsers can use to parse cookie lines with this attribute.
+This algorithm could be added to [section 5.3 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.3).
+
+1.  Let the "partition-key" be null.
+
+1.  If an attribute-name case-insensitively matches the string `"Partitioned"` then "partition-key" should be the [site](https://html.spec.whatwg.org/#sites) of the top-level document when the user agent made the request.
+
+    1. If the top-level document's site is in a [First-Party Set](https://github.com/privacycg/first-party-sets), then "partition-key" is the concatenation of "https://" and the "owner domain" of the site's set.
+
+1.  Append an attribute to the cookie-attribute-list with an attribute-name of "PartitionKey" and an attribute-value of "partition-key".
+
+Below is the algorithm for storing `Partitioned` cookies.
+These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.4) after the user agent processes the cookie's __Host- prefix.
+
+1.  If the cookie-attribute-list contains an attribute with an attribute-name of "PartitionKey" and the attribute-value is null, then skip the following steps and insert the cookie into the cookie store.
+
+1.  If the cookie-name does not start with a case-sensitive match for the string "__Host-", then abort the following steps and ignore the cookie entirely.
+
+1.  If the cookie line also contains the [`SameParty` attribute](https://github.com/cfredric/sameparty) (the exact semantics of how the `SameParty` attribute is loaded into the cookie-attribute-list is TBD) then abort the following steps and ignore the cookie entirely.
+
+1.  Set the cookie's partition-key to the attribute-value of the element in the attribute-list whose attribute-name is "PartitionKey".
+
+Also, we would modify the first part of step 19 of the algorithm in step 5.4 to also include the partition-key in the list of cookie attributes to check, so that two cookies with the same name, domain, host-only-flag, and path can coexist in the cookie store if their partition-key values differ.
+
+### Attaching a `Partitioned` cookie to a request
+
 In third-party contexts, the `Partitioned` cookies would be sent in the request header as follows:
 
 ```
@@ -307,6 +336,21 @@ Cookie: __Host-SID=31d4d96e407aad42
 
 Note: If this is a first-time request to the third-party with a different partition key, no cookies would be sent.
 In other words, the third-party would get a new identifier for each top-level context.
+
+#### Algorithm
+
+Below is an algorithm for attaching `Partitioned` cookies to a request.
+These steps could be added to the algorithm described in [section 5.5 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.5) after the first step.
+
+For each cookie in the cookie-list do the following:
+
+1.  If the cookie's partition-key is null, skip the following parts of this step.
+
+1.  Let "request-partition-key" be the [site](https://html.spec.whatwg.org/#sites) of the top-level document when the user agent initiated the request.
+
+    1.  If the top-level document's site is in a [First-Party Set](https://github.com/privacycg/first-party-sets) then the request-partition-key is the concatenation of "https://" and the "owner domain" of the site's set.
+
+1.  If the cookie's partition-key is not an exact string match of request-partition-key, then remove that cookie from the cookie-list.
 
 ### Example usage
 
