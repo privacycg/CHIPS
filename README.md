@@ -305,7 +305,7 @@ Set-Cookie: abc=21ef; SameSite=None; Secure // blocked in 3p contexts
 Below is the algorithm that browsers can use to parse cookie lines with this attribute.
 This algorithm could be added to [section 5.3 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.3).
 
-1.  Let the "partition-key" be null.
+1.  Let "partition-key" be null.
 
 1.  If an attribute-name case-insensitively matches the string `"Partitioned"` then "partition-key" should be the [site](https://html.spec.whatwg.org/#sites) of the top-level document when the user agent made the request.
 
