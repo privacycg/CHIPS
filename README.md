@@ -23,7 +23,6 @@
     - [Opt-in partitioned cookies](#opt-in-partitioned-cookies)
     - [Only sent over secure protocols](#only-sent-over-secure-protocols)
     - [Hostname-bound](#hostname-bound)
-    - [Only visible to the HTTP layer](#only-visible-to-the-http-layer)
     - [Avoid a large memory footprint](#avoid-a-large-memory-footprint)
 - [Detailed Design](#detailed-design)
     - [Partitioning model](#partitioning-model)
@@ -247,14 +246,6 @@ This helps address some aspects of cookies' [weak confidentiality](https://tools
 Partitioned cookies should also be hostname bound.
 This and the requirement partitioned cookies be sent over secure protocols makes partitioned cookies as close to origin-bound as possible.
 We would like to have user agents scope partitioned cookies by port as well, making them origin-scoped, but we think this requirement should only be enforced if/when [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled.
-
-### Only visible to the HTTP layer
-
-Partitioned cookies should only be visible to the HTTP layer, which makes them less vulnerable to security vulnerabilities such as XSS-attacks.
-
-Since Chrome data suggests only ~17% of cookies use the `HttpOnly` attribute, we believe that requiring partitioned cookies be HTTP-only will help facilitate cookies becoming more secure overall.
-
-Note: This requirement and the requirement to only use secure protocols makes partitioned cookies behave more similarly to [HTTP State Tokens](https://github.com/mikewest/http-state-tokens).
 
 ### Avoid a large memory footprint
 
