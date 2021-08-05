@@ -226,7 +226,7 @@ The purpose of this document is to propose a new cookie attribute, `Partitioned`
 
 ### Opt-in partitioned cookies
 
-The primary aspect that distinguishes this proposal from existing implementations of partitioned cookies is the developer opt-in.
+The primary aspect that distinguishes this proposal from existing implementations of partitioned cookies is the third-party opt-in.
 Cookies must be set with a new attribute in order to be sent on cross-party requests once (unpartitioned) third-party cookies are obsoleted.
 
 This principle is in line with the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) in the long term.
@@ -508,7 +508,7 @@ Even if we block partitioned cookies (or even all cookies) from extensions' back
 [Firefox](https://blog.mozilla.org/security/2021/02/23/total-cookie-protection/) announced that they are partitioning all third-party cookies by default into their ETP Strict mode.
 Safari [previously](https://webkit.org/blog/8613/intelligent-tracking-prevention-2-1/) tried partitioning cookies based on heuristics, but eventually chose to block them altogether citing developer confusion as one of the reasons.
 
-We do not think cookies should be partitioned without a developer opt-in since developers built their existing servers with the expectation of an unpartitioned third-party cookie.
+We do not think cookies should be partitioned without a third-party opt-in since third parties built their existing servers with the expectation of an unpartitioned third-party cookie.
 This can cause confusion and unexpected bugs ([1](https://bugzilla.mozilla.org/show_bug.cgi?id=1316019), [2](https://bugzilla.mozilla.org/show_bug.cgi?id=1319728), [3](https://bugzilla.mozilla.org/show_bug.cgi?id=1629062), [4](https://bugzilla.mozilla.org/show_bug.cgi?id=1651134)).
 
 Partitioning by default also has more implementation complexity for browser developers, since they need to consider how partitioning the cookie jar will impact any part of the browser that interacts with cookies.
