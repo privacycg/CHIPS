@@ -12,13 +12,14 @@
 ## Table of Contents
 
 - [Motivation](#motivation)
+- [CHIPS: Opt-in Partitioned Cookies](#chips-opt-in-partitioned-cookies)
+- [Non-Goals](#non-goals)
 - [Key Scenarios](#key-scenarios)
     - [Third-party store-finder service](#third-party-store-finder-service)
     - [Third-party customer service chat embed](#third-party-customer-service-chat-embed)
     - [CDN load balancing](#cdn-load-balancing)
     - [Other examples of use cases](#other-examples-of-use-cases)
 - [Non-goals](#non-goals)
-- [CHIPS: Opt-in Partitioned Cookies](#chips-opt-in-partitioned-cookies)
 - [Design Principles](#design-principles)
     - [Opt-in partitioned cookies](#opt-in-partitioned-cookies)
     - [Only sent over secure protocols](#only-sent-over-secure-protocols)
@@ -76,6 +77,41 @@ This includes [phasing out support for _third-party cookies_](https://blog.chrom
 
 Although third-party cookies can enable third-party sites to track user behavior across different top-level sites, there are some cookie use cases on the web today where cross-domain subresources require some notion of session or persistent state that is scoped to a user's activity on a single top-level site.
 Some examples of such use cases are SaaS providers ([1](https://github.com/privacycg/first-party-sets/issues/33), [2](https://github.com/privacycg/storage-access/issues/74)), [headless CMS providers](https://gist.github.com/rexxars/42d870946d82a3daa0e35b238e0b7d7a), and sandbox domains for serving untrusted user content, e.g. `googleusercontent.com`, `githubusercontent.com` ([1](https://blog.kerika.com/googleusercontent-com-can-trip-you-up-if-you-disable-third-party-cookies/), [2](https://gadgetstouse.com/blog/2020/12/11/fix-google-drive-downloads-not-working-in-microsoft-edge/)).
+
+## CHIPS: Opt-in Partitioned Cookies
+
+In order to meet the use cases, we propose to introduce partitioned cookies a.k.a. CHIPS (Cookies Having Independent Partitioned State).
+Third parties may opt-in to using CHIPS by setting their cross-site cookies with the `Partitioned` attribute.
+This attribute will indicate to user agents that these cross-site cookies should only be available in the same top-level context (top-level site or that site's [First-Party Set](https://github.com/privacycg/first-party-sets) if it has one) that the cookie was created in.
+
+Under this proposal when a user visits `green.com` and embedded content from `red.com` sets a cookie in response to the cross-site request, the user agent would only send that cookie when the top-level site is `green.com`.
+When they are visiting a new site, `blue.com`, an embedded `red.com` frame would not receive the cookie set when `red.com` was embedded in `green.com`.
+
+<center><figure>
+    <img src="./img/after.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level site.">
+    <br>
+    <em>
+        After CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the user visits blue.com, the red.com frame cannot access the cookie set at green.com since it was a different top-level site.
+    </em>
+    <br><br>
+</figure></center>
+
+**Note:** Firefox recently introduced partitioning all third-party cookies by default as a compatibility measure in the ETP Strict mode, and Safari briefly enabled (and subsequently rolled back) this in a previous version of ITP.
+More details on this approach are covered in the section [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default).
+
+The purpose of this document is to propose a new cookie attribute, 
+
+## Non-goals
+
+- This document does not describe any changes to how a top-level site interacts with its own cookies.
+
+- This document does not describe a replacement for third-party cookies that are shared across different domains owned by the same first organization. For this use case, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
+
+- This document also does not describe partitioning any other type of browser storage other than cookies (e.g. HTTP cache, LocalStorage, service workers, etc.).
+
+- This document does not describe how unpartitioned cross-site cookies (i.e. third-party cookies) will be removed.
+  This document describes an opt-in cross-site cookie partitioning mechanism which will be introduced before third-party cookies are removed entirely.
+  The motivation being to provide developers a well-lit path forward for acceptable cross-site cookie use without completely removing existing cross-site cookie functionality before we remove third-party cookies.
 
 ## Key Scenarios
 
@@ -192,35 +228,6 @@ Some other examples of use cases for partitioned cookies not listed above are:
 - Third-party CDNs that use cookies to serve access-controlled content
 - Front-end frameworks that rely on remote hosting and RPCs to remote services
 - Other types of third-party SaaS embeds
-
-## Non-goals
-
-- This document does not describe any changes to how a top-level site interacts with its own cookies.
-
-- This document does not describe a replacement for third-party cookies that are shared across different domains owned by the same first organization. For this use case, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
-
-- This document also does not describe partitioning any other type of browser storage other than cookies (e.g. HTTP cache, LocalStorage, service workers, etc.).
-
-## CHIPS: Opt-in Partitioned Cookies
-
-In order to meet the use cases, we propose to introduce partitioned cookies a.k.a. CHIPS (Cookies Having Independent Partitioned State).
-
-Under this proposal when a user visits `green.com` and embedded content from `red.com` sets a cookie in response to the cross-site request, the user agent would only send that cookie when the top-level site is `green.com`.
-When they are visiting a new site, `blue.com`, an embedded `red.com` frame would not receive the cookie set when `red.com` was embedded in `green.com`.
-
-<center><figure>
-    <img src="./img/after.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level site.">
-    <br>
-    <em>
-        After CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the user visits blue.com, the red.com frame cannot access the cookie set at green.com since it was a different top-level site.
-    </em>
-    <br><br>
-</figure></center>
-
-**Note:** Firefox recently introduced partitioning all third-party cookies by default as a compatibility measure in the ETP Strict mode, and Safari briefly enabled (and subsequently rolled back) this in a previous version of ITP.
-More details on this approach are covered in the section [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default).
-
-The purpose of this document is to propose a new cookie attribute, `Partitioned`, which will allow user agents to opt-in to partitioning cookies by top-level context, i.e. partitioned by top-level site (or that site's [First-Party Set](https://github.com/privacycg/first-party-sets) if it has one).
 
 ## Design Principles
 
