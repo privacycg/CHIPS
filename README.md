@@ -19,7 +19,6 @@
     - [Third-party customer service chat embed](#third-party-customer-service-chat-embed)
     - [CDN load balancing](#cdn-load-balancing)
     - [Other examples of use cases](#other-examples-of-use-cases)
-- [Non-goals](#non-goals)
 - [Design Principles](#design-principles)
     - [Opt-in partitioned cookies](#opt-in-partitioned-cookies)
     - [Only sent over secure protocols](#only-sent-over-secure-protocols)
@@ -97,9 +96,7 @@ When they are visiting a new site, `blue.com`, an embedded `red.com` frame would
 </figure></center>
 
 **Note:** Firefox recently introduced partitioning all third-party cookies by default as a compatibility measure in the ETP Strict mode, and Safari briefly enabled (and subsequently rolled back) this in a previous version of ITP.
-More details on this approach are covered in the section [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default).
-
-The purpose of this document is to propose a new cookie attribute, 
+More details on their approaches are discussed in [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default).
 
 ## Non-goals
 
@@ -111,7 +108,7 @@ The purpose of this document is to propose a new cookie attribute,
 
 - This document does not describe how unpartitioned cross-site cookies (i.e. third-party cookies) will be removed.
   This document describes an opt-in cross-site cookie partitioning mechanism which will be introduced before third-party cookies are removed entirely.
-  The motivation being to provide developers a well-lit path forward for acceptable cross-site cookie use without completely removing existing cross-site cookie functionality before we remove third-party cookies.
+  The motivation being to provide developers a well-lit path forward for cross-site cookie use cases scoped to activity on a single top-level context before browsers completely remove unpartitioned third-party cookies.
 
 ## Key Scenarios
 
