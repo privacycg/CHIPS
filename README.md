@@ -13,6 +13,9 @@
 
 - [Motivation](#motivation)
 - [CHIPS: Opt-in Partitioned Cookies](#chips-opt-in-partitioned-cookies)
+    - [Prior art](#prior-art)
+        - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
+        - [Use Storage Access API for opt-in](#use-storage-access-api-for-opt-in)
 - [Non-Goals](#non-goals)
 - [Key Scenarios](#key-scenarios)
     - [Third-party store-finder service](#third-party-store-finder-service)
@@ -46,9 +49,6 @@
         - [Extension pages](#extension-pages)
         - [Background contexts](#background-contexts)
 - [Security and Privacy Considerations](#security-and-privacy-considerations)
-- [Alternate Cookie Partitioning Designs](#alternate-cookie-partitioning-designs)
-    - [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default)
-    - [Use Storage Access API for opt-in](#use-storage-access-api-for-opt-in)
 - [Alternate Designs for CHIPS](#alternate-designs-for-chips)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
     - [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit)
@@ -97,6 +97,27 @@ When they are visiting a new site, `blue.com`, an embedded `red.com` frame would
 
 **Note:** Firefox recently introduced partitioning all third-party cookies by default as a compatibility measure in the ETP Strict mode, and Safari briefly enabled (and subsequently rolled back) this in a previous version of ITP.
 More details on their approaches are discussed in [Partition all third-party cookies by default](#partition-all-third-party-cookies-by-default).
+
+### Prior art
+
+#### Partition all third-party cookies by default
+
+[Firefox](https://blog.mozilla.org/security/2021/02/23/total-cookie-protection/) announced that they are partitioning all third-party cookies by default, i.e. all cross-site cookies are partitioned by top-level site without any opt-in, into their ETP Strict mode.
+Safari [previously](https://webkit.org/blog/8613/intelligent-tracking-prevention-2-1/) tried partitioning cookies based on heuristics, but eventually chose to block them altogether citing developer confusion as one of the reasons.
+
+We do not think cookies should be partitioned without a third-party opt-in since third parties built their existing servers with the expectation of an unpartitioned third-party cookie.
+This can cause confusion and unexpected bugs ([1](https://bugzilla.mozilla.org/show_bug.cgi?id=1316019), [2](https://bugzilla.mozilla.org/show_bug.cgi?id=1319728), [3](https://bugzilla.mozilla.org/show_bug.cgi?id=1629062), [4](https://bugzilla.mozilla.org/show_bug.cgi?id=1651134)).
+
+Partitioning by default also has more implementation complexity for browser developers, since they need to consider how partitioning the cookie jar will impact any part of the browser that interacts with cookies.
+Supporting opt-in cookie partitioning while gradually moving the web off of globally-scoped third-party cookies will help ease the transition for browsers.
+
+There is also the issue of state proliferation.
+There are some third-party origins on the web today that are prevalent across many partitions.
+If we partition the cookie jar by default and do not include a new upper bound on the size of each cookie jar partition, device storage limits will be exhausted more quickly.
+
+#### Use Storage Access API for opt-in
+
+At the time of writing there is a [proposal](https://github.com/privacycg/storage-access/issues/75) under discussion for opt-in partitioned cookies, but instead of using a cookie attribute users would opt-in to giving third parties a partitioned cookie jar using the Storage Access API.
 
 ## Non-goals
 
@@ -504,27 +525,6 @@ Another privacy consideration is that the privacy guarantees of partitioned cook
 Extensions' background contexts can query and store cookies across partitions, meaning they could store a cross-site identifier across partitions.
 Unfortuately, this type of attack is unavoidable due to the nature of extensions.
 Even if we block partitioned cookies (or even all cookies) from extensions' background contexts, an extension could still use content scripts to write cross-site identifiers to the DOM which the site's own script could copy to the site's partitioned cookie jar.
-
-## Alternate Cookie Partitioning Designs
-
-### Partition all third-party cookies by default
-
-[Firefox](https://blog.mozilla.org/security/2021/02/23/total-cookie-protection/) announced that they are partitioning all third-party cookies by default into their ETP Strict mode.
-Safari [previously](https://webkit.org/blog/8613/intelligent-tracking-prevention-2-1/) tried partitioning cookies based on heuristics, but eventually chose to block them altogether citing developer confusion as one of the reasons.
-
-We do not think cookies should be partitioned without a third-party opt-in since third parties built their existing servers with the expectation of an unpartitioned third-party cookie.
-This can cause confusion and unexpected bugs ([1](https://bugzilla.mozilla.org/show_bug.cgi?id=1316019), [2](https://bugzilla.mozilla.org/show_bug.cgi?id=1319728), [3](https://bugzilla.mozilla.org/show_bug.cgi?id=1629062), [4](https://bugzilla.mozilla.org/show_bug.cgi?id=1651134)).
-
-Partitioning by default also has more implementation complexity for browser developers, since they need to consider how partitioning the cookie jar will impact any part of the browser that interacts with cookies.
-Supporting opt-in cookie partitioning while gradually moving the web off of globally-scoped third-party cookies will help ease the transition for browsers.
-
-There is also the issue of state proliferation.
-There are some third-party origins on the web today that are prevalent across many partitions.
-If we partition the cookie jar by default and do not include a new upper bound on the size of each cookie jar partition, device storage limits will be exhausted more quickly.
-
-### Use Storage Access API for opt-in
-
-At the time of writing there is a [proposal](https://github.com/privacycg/storage-access/issues/75) under discussion for opt-in partitioned cookies, but instead of using a cookie attribute users would opt-in to giving third parties a partitioned cookie jar using the Storage Access API.
 
 ## Alternate Designs for CHIPS
 
