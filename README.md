@@ -492,6 +492,21 @@ Browsers may choose to provide user controls to clear individual partitions of a
 Top-level sites should not be able to clear the third-parties' cookies in their partition.
 This would provide a potential attack vector for top-level sites to interfere with code running in third-party frames.
 
+### CookieStore API
+
+We propose modest changes to the [CookieStore API](https://wicg.github.io/cookie-store/) to support `Partitioned` cookies:
+
+1. Add an optional boolean field, `partitioned` to [CookieInit](https://wicg.github.io/cookie-store/#dictdef-cookieinit).
+   This will allow scripts to set `Partitioned` cookies using [`CookieStore.set`](https://wicg.github.io/cookie-store/#CookieStore-set).
+   If the field is not present, it should be considered `false`.
+
+1.  Add a boolean field, `partitioned`, to [CookieListItem](https://wicg.github.io/cookie-store/#dictdef-cookielistitem).
+    The field will indicate if a cookie is partitioned to callers of [`CookieStore.get`](https://wicg.github.io/cookie-store/#CookieStore-get) and [`CookieStore.getAll`](https://wicg.github.io/cookie-store/#CookieStore-getAll).
+
+1.  Add an optional boolean field, `partitioned` to [CookieStoreDeleteOptions](https://wicg.github.io/cookie-store/#dictdef-cookiestoredeleteoptions).
+    This will allow callers of [`CookieStore.delete`](https://wicg.github.io/cookie-store/#CookieStore-delete) to specify whether they want to delete a `partitioned` cookie.
+    If the field is not present, it should delete both partitioned and unpartitioned cookies that match the options' criteria.
+
 ### Handling older or incompatible clients
 
 The new cookie attribute will be ignored on older clients that don't recognize it and fall back to default behavior.
@@ -503,7 +518,7 @@ This would ensure that cross-site cookies are hostname bound and only sent over 
 
 ### Service workers
 
-Service workers have access to cookies via the [CookieStore](https://wicg.github.io/cookie-store/explainer.html) API or when they send HTTP requests using `fetch` (imagine a worker pings an HTTP endpoint that just echoes back the request's `Cookie` header in its response).
+Service workers have access to cookies via the [CookieStore API](https://wicg.github.io/cookie-store/) API or when they send HTTP requests using `fetch` (imagine a worker pings an HTTP endpoint that just echoes back the request's `Cookie` header in its response).
 Unless service workers are partitioned, then the unpartitioned cookie jar would be available to the worker even if the cookies are `HttpOnly`.
 Because of these reasons, partitioning service workers is the only way to guarantee a partitioned cookie jar.
 
