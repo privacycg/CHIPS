@@ -46,6 +46,7 @@
         - [`SameParty` attribute](#sameparty-attribute)
         - [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition)
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
+    - [CookieStore API](#cookiestore-api)
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
     - [Service workers](#service-workers)
     - [Browser extensions](#browser-extensions)
