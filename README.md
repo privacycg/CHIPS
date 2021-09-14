@@ -497,9 +497,9 @@ This would provide a potential attack vector for top-level sites to interfere wi
 
 We propose modest changes to the [CookieStore API](https://wicg.github.io/cookie-store/) to support `Partitioned` cookies:
 
-1. Add an optional boolean field, `partitioned` to [CookieInit](https://wicg.github.io/cookie-store/#dictdef-cookieinit).
-   This will allow scripts to set `Partitioned` cookies using [`CookieStore.set`](https://wicg.github.io/cookie-store/#CookieStore-set).
-   If the field is not present, it should be considered `false`.
+1.  Add an optional boolean field, `partitioned` to [CookieInit](https://wicg.github.io/cookie-store/#dictdef-cookieinit).
+    This will allow scripts to set `Partitioned` cookies using [`CookieStore.set`](https://wicg.github.io/cookie-store/#CookieStore-set).
+    If the field is not present, it should be considered `false`.
 
 1.  Add a boolean field, `partitioned`, to [CookieListItem](https://wicg.github.io/cookie-store/#dictdef-cookielistitem).
     The field will indicate if a cookie is partitioned to callers of [`CookieStore.get`](https://wicg.github.io/cookie-store/#CookieStore-get) and [`CookieStore.getAll`](https://wicg.github.io/cookie-store/#CookieStore-getAll).
