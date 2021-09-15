@@ -58,7 +58,6 @@
     - [Requiring the `__Secure-` prefix](#requiring-the-__secure--prefix)
     - [Not requiring the `__Host-` prefix](#not-requiring-the-__host--prefix)
     - [DNS CNAME’ing](#dns-cnameing)
-- [Prior Art](#prior-art)
 - [References and Acknowledgements](#references-and-acknowledgements)
     - [Acknowledgements](#acknowledgements)
     - [References](#references)
@@ -615,11 +614,6 @@ However, this pattern has a couple of security drawbacks:
 - All `Domain` cookies set on `myblog.example` get sent to `myblog.cms.example`, including potentially sensitive data set by other subdomains on `myblog.example`.
 
 Additionally, this adds implementation and deployment complexity for developers.
-
-## Prior Art
-
-- [Safari](https://webkit.org/blog/8613/intelligent-tracking-prevention-2-1/) partitioned the cookie jar by default in ITP 2.1
-- [Firefox](https://blog.mozilla.org/security/2021/02/23/total-cookie-protection/) partitioned the cookie jar by default in ETP Strict Mode
 
 ## References and Acknowledgements
 
