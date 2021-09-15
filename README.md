@@ -519,7 +519,7 @@ This would ensure that cross-site cookies are hostname bound and only sent over 
 
 ### Service workers
 
-Service workers have access to cookies via the [CookieStore API](https://wicg.github.io/cookie-store/) API or when they send HTTP requests using `fetch` (imagine a worker pings an HTTP endpoint that just echoes back the request's `Cookie` header in its response).
+Service workers have access to cookies via the [CookieStore API](https://wicg.github.io/cookie-store/) or when they send HTTP requests using `fetch` (imagine a worker pings an HTTP endpoint that just echoes back the request's `Cookie` header in its response).
 Unless service workers are partitioned, then the unpartitioned cookie jar would be available to the worker even if the cookies are `HttpOnly`.
 Because of these reasons, partitioning service workers is the only way to guarantee a partitioned cookie jar.
 
