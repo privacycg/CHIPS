@@ -511,6 +511,8 @@ If a user agent partitions service workers using this scheme, there is no cross-
 
 [Service workers are disabled](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning) in Firefox when Dynamic Partitioning is enabled, but they are [working on implementing a partitioned service worker solution](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241).
 
+Service workers are listed as a type of storage that should be partitioned in the [PrivacyCG's Client-Side Storage Partitioning](https://github.com/privacycg/storage-partitioning) proposal.
+
 ### Browser extensions
 
 #### Extension pages
@@ -644,6 +646,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [mikewest/http-state-tokens: Incrementally better HTTP state management.](https://github.com/mikewest/http-state-tokens)
 - [Principle of least privilege - Wikipedia](https://en.wikipedia.org/wiki/Principle_of_least_privilege)
 - [privacycg/first-party-sets](https://github.com/privacycg/first-party-sets)
+- [privacycg/storage-partitioning: Client-Side Storage Partitioning](https://github.com/privacycg/storage-partitioning)
 - [SameSite=None: Known Incompatible Clients - The Chromium Projects](https://www.chromium.org/updates/same-site/incompatible-clients)
 - [sbingler/Origin-Bound-Cookies](https://github.com/sbingler/Origin-Bound-Cookies)
 - [Secure Contexts](https://w3c.github.io/webappsec-secure-contexts)
