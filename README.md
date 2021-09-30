@@ -452,8 +452,8 @@ User agents must only accept Partitioned cookies which have the `__Host-` prefix
 
 The `__Host-` prefix requires that the cookie be set with `Secure` and `Path=/` and disallows the `Domain` attribute.
 These requirements ensure that partitioned cookies only be set from and sent to secure origins only.
-It also makes the cookies hostname-bound within a partition.
-This requirement would have the semantics of partitioned cookies as close to origin-bound as possible.
+It also would disallow `Domain` cookies which can be shared between different third-party subdomains within a partition.
+This requirement make partitioned cookies be as close to third-party origin-bound as possible.
 
 #### `HttpOnly` attribute
 
