@@ -506,12 +506,16 @@ Service workers have access to cookies via the [CookieStore](https://wicg.github
 Unless service workers are partitioned, then the unpartitioned cookie jar would be available to the worker even if the cookies are `HttpOnly`.
 Because of these reasons, partitioning service workers is the only way to guarantee a partitioned cookie jar.
 
+If a user agent implements service worker partitioning, and a service worker is registered in a third-party context, then `Partitioned` cookies *must* only be surfaced to workers if the cookies' partition key matches the top-level site the worker was registered in.
+The worker *must* not have access to cookies whose partition key is the worker's origin, since this would effectively give partitioned workers access to unpartitioned cross-site cookies.
+
 Safari [has already partitioned service workers](https://webkit.org/blog/8090/workers-at-your-service/) by the top-level origin when the worker was registered and the service worker's origin, so that service workers can only interact with windows that are the same top-level origin as the top-level page when the worker was installed.
-If a user agent partitions service workers using this scheme, there is no cross-site tracking risk to exposing `Partitioned` cookies to service workers.
+If a user agent partitions service workers using this scheme, there is no cross-site tracking risk to exposing `Partitioned` cookies to service workers. 
 
 [Service workers are disabled](https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Privacy/State_Partitioning) in Firefox when Dynamic Partitioning is enabled, but they are [working on implementing a partitioned service worker solution](https://bugzilla.mozilla.org/show_bug.cgi?id=1495241).
 
 Service workers are listed as a type of storage that should be partitioned in the [PrivacyCG's Client-Side Storage Partitioning](https://github.com/privacycg/storage-partitioning) proposal.
+Their partitioning model was described in greater detail in [this explainer](https://github.com/wanderview/quota-storage-partitioning/blob/main/explainer.md#serviceworker-api).
 
 ### Browser extensions
 
@@ -647,6 +651,7 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 - [Principle of least privilege - Wikipedia](https://en.wikipedia.org/wiki/Principle_of_least_privilege)
 - [privacycg/first-party-sets](https://github.com/privacycg/first-party-sets)
 - [privacycg/storage-partitioning: Client-Side Storage Partitioning](https://github.com/privacycg/storage-partitioning)
+- [quota-storage-partitioning/explainer.md at main · wanderview/quota-storage-partitioning](https://github.com/wanderview/quota-storage-partitioning/blob/main/explainer.md)
 - [SameSite=None: Known Incompatible Clients - The Chromium Projects](https://www.chromium.org/updates/same-site/incompatible-clients)
 - [sbingler/Origin-Bound-Cookies](https://github.com/sbingler/Origin-Bound-Cookies)
 - [Secure Contexts](https://w3c.github.io/webappsec-secure-contexts)
