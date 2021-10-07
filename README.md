@@ -506,7 +506,7 @@ We propose modest changes to the [CookieStore API](https://wicg.github.io/cookie
 
 1.  Add an optional boolean field, `partitioned` to [CookieStoreDeleteOptions](https://wicg.github.io/cookie-store/#dictdef-cookiestoredeleteoptions).
     This will allow callers of [`CookieStore.delete`](https://wicg.github.io/cookie-store/#CookieStore-delete) to specify whether they want to delete a `partitioned` cookie.
-    If the field is not present, it should delete both partitioned and unpartitioned cookies that match the options' criteria.
+    If the field is not present, it will default to `false`.
 
 ### Handling older or incompatible clients
 
