@@ -48,6 +48,7 @@
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
     - [CookieStore API](#cookiestore-api)
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
+    - [Memory impact](#memory-impact)
     - [Service workers](#service-workers)
     - [Browser extensions](#browser-extensions)
         - [Extension pages](#extension-pages)
@@ -515,6 +516,13 @@ Since these cookies are intended for third-party contexts, [clients that are inc
 It is also recommended to still include the `__Host-` prefix.
 Even clients that do not recognize the `Partitioned` attribute still enforce the semantics of the `__Host-` prefix.
 This would ensure that cross-site cookies are hostname bound and only sent over secure channels, which is still a security win.
+
+### Memory impact
+
+Based on Chrome data, we estimate limiting a domain to 10 cookies per-partition will satisfy ~99% of existing cross-site cookie use cases on the web today.
+Based on Chrome data aggregated over a 28 day period, we estimate partitioning cross-site cookies will increase the cookie jar size ~6% on average for Android Chrome users with at least 25 cookies and ~18% on average for desktop Chrome users with at least 25 cookies.
+
+We find this trade-off between meeting cross-site cookie use cases and memory impact to be acceptable, but user agents may wish to impose additional size limits on the partitioned cookie jar such as a global limit on all partitioned cookies.
 
 ### Service workers
 
