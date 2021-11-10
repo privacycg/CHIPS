@@ -127,7 +127,7 @@ At the time of writing there is a [proposal](https://github.com/privacycg/storag
 
 - This document does not describe any changes to how a top-level site interacts with its own cookies.
   For top-level site owners, most partitioned cookie use cases are covered by using SameSite=Lax/Strict instead.
-  Moreoever, SameSite=Lax/Strict provide better CSRF protections for a top-level domain's cookies, since [site for cookies]() depends on the entire ancestor chain and partition keys only consider top-level site.
+  Moreoever, SameSite=Lax/Strict provide better CSRF protections for a top-level domain's cookies, since [site for cookies](https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/#section-5.2) depends on the entire ancestor chain and partition keys only consider top-level site.
 
 - This document does not describe a replacement for third-party cookies that are shared across different domains owned by the same first organization. For this use case, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
 
