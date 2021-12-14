@@ -318,7 +318,7 @@ Any cookies that are not set with the `Partitioned` attribute will eventually be
 Below is an example of a `Set-Cookie` header that uses the `Partitioned` attribute:
 
 <pre>
-Set-Cookie: __Host-SID=31d4d96e407aad42; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitioned;</b>
+Set-Cookie: __Host-SID=31d4d96e407aad42; SameSite=None; Secure; Path=/; <b>Partitioned;</b>
 Set-Cookie: abc=21ef; SameSite=None; Secure // blocked in 3p contexts
 </pre>
 
