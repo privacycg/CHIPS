@@ -67,7 +67,9 @@ In order to increase privacy on the web, browser vendors are either planning or 
 This includes [phasing out support for _third-party cookies_](https://blog.chromium.org/2020/01/building-more-private-web-path-towards.html), cookies sent in requests to sites other than the top-level document's site, since such cookies enable servers to track users' behavior across different top-level sites.
 
 <center><figure>
-    <img src="./img/before.png" width="600px" alt="Before CHIPS third parties have access to unpartitioned cookies across top-level sites.">
+    <img src="./img/before1-2021-12-14.png" width="600px" alt="Before CHIPS when third parties set a cookie on one site...">
+    <br>
+    <img src="./img/before2-2021-12-14.png" width="600px" alt="...then that site has access to the same cookie on a different top-level site.">
     <br>
     <em>
         Before CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the browser navigates to blue.com, the red.com frame can access the cookie set at green.com.
@@ -88,7 +90,9 @@ Under this proposal when a user visits `green.com` and embedded content from `re
 When they are visiting a new site, `blue.com`, an embedded `red.com` frame would not receive the cookie set when `red.com` was embedded in `green.com`.
 
 <center><figure>
-    <img src="./img/after.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level site.">
+    <img src="./img/after1-2021-12-14.png" width="600px" alt="After CHIPS third parties' cookie jars are partitioned by top-level site.">
+    <br>
+    <img src="./img/after2-2021-12-14.png" width="600px" alt="So a third party will not have access to cookies that they set on another top-level site.">
     <br>
     <em>
         After CHIPS: A browser visits green.com which has an embedded red.com frame that sets a cookie. When the user visits blue.com, the red.com frame cannot access the cookie set at green.com since it was a different top-level site.
