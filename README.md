@@ -129,7 +129,7 @@ At the time of writing there is a [proposal](https://github.com/privacycg/storag
 
 - This document does not describe any changes to how a top-level site interacts with its own cookies.
   For top-level site owners, most partitioned cookie use cases are covered by using SameSite=Lax/Strict instead.
-  However, there are edge cases where CHIPS may be useful to top-level site owners.
+  However, there are uncommon cases where CHIPS may be useful to top-level site owners.
   See [First-Party CHIPS](#first-party-chips) section below for more info.
 
 - This document does not describe a replacement for third-party cookies that are shared across different domains owned by the same first organization. For this use case, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
@@ -542,7 +542,7 @@ This problem is discussed further in [Security and Privacy Considerations](#secu
 
 ### First-Party CHIPS
 
-Typically, top-level site owners (i.e. the "first party") would want to use `SameSite=Lax/Strict` cookies on their own site, since these cookies have SameSite protections from click jacking and other forms of abuse.
+Typically, top-level site owners (i.e. the "first party") would want to use `SameSite=Lax/Strict` cookies on their own site, since these cookies offer [CSRF protections](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-09#section-8.8).
 
 However, consider a first party wishes to set a cookie in a response to a request to the top-level site that is embedded in a third-party iframe.
 Since [site for cookies](https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/#section-5.2) depends on the entire ancestor chain, the first party cannot use `SameSite=Lax/Strict` cookies.
