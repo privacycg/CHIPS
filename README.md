@@ -50,6 +50,7 @@
     - [Browser extensions](#browser-extensions)
         - [Extension pages](#extension-pages)
         - [Background contexts](#background-contexts)
+    - [First-Party CHIPS](#first-party-chips)
 - [Security and Privacy Considerations](#security-and-privacy-considerations)
 - [Alternate Designs for CHIPS](#alternate-designs-for-chips)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
@@ -127,6 +128,9 @@ At the time of writing there is a [proposal](https://github.com/privacycg/storag
 ## Non-goals
 
 - This document does not describe any changes to how a top-level site interacts with its own cookies.
+  For top-level site owners, most partitioned cookie use cases are covered by using SameSite=Lax/Strict instead.
+  However, there are uncommon cases where CHIPS may be useful to top-level site owners.
+  See [First-Party CHIPS](#first-party-chips) section below for more info.
 
 - This document does not describe a replacement for third-party cookies that are shared across different domains owned by the same first organization. For this use case, consider using [First-Party Sets](https://github.com/privacycg/first-party-sets).
 
@@ -535,6 +539,47 @@ We propose to give extensions the ability to select which partition key to use w
 
 It is worth noting that by allowing extension background contexts to load cookies across different partitions allows extensions to use partitioned cookies to store cross-site identifiers.
 This problem is discussed further in [Security and Privacy Considerations](#security-and-privacy-considerations).
+
+### First-Party CHIPS
+
+Typically, top-level site owners (i.e. the "first party") would want to use `SameSite=Lax/Strict` cookies on their own site, since these cookies offer [CSRF protections](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-09#section-8.8).
+
+However, consider a first party wishes to set a cookie in a response to a request to the top-level site that is embedded in a third-party iframe.
+Since [site for cookies](https://datatracker.ietf.org/doc/draft-ietf-httpbis-rfc6265bis/#section-5.2) depends on the entire ancestor chain, the first party cannot use `SameSite=Lax/Strict` cookies.
+So the first party is forced to set a `SameSite=None` cookie.
+
+<center><figure>
+    <img src="./img/first-party-before1-2021-12-21.png" width="600px" alt="A top-level site wishes to set a cookie for a response from a request in a third-party frame.">
+    <br><br>
+</figure></center>
+
+However, this cookie does not have SameSite protections.
+A malicious site could embed the top-level site and would have access to these cookies.
+
+<center><figure>
+    <img src="./img/first-party-before2-2021-12-21.png" width="600px" alt="However this cookie is available on any site that embeds the previous top-level site.">
+    <br><br>
+</figure></center>
+
+After CHIPS, the first party can set `SameSite=None;Partitioned` cookies in the response from the embedded third-party frame.
+The first party's embedded request will still have access to these cookies on this top-level site because the cookie partition key only considers the top-level site.
+
+<center><figure>
+    <img src="./img/first-party-after1-2021-12-21.png" width="600px" alt="A top-level site could set a SameSite=None;Partitioned cookie.">
+    <br><br>
+</figure></center>
+
+Unlike `SameSite=None` cookies before CHIPS, these `Partitioned` cookies are only available on a single top-level site.
+If a malicious site tries to embed the first party on their own site, then the malicious actor will not be able to see a `SameSite=None;Partitioned` cookie.
+
+<center><figure>
+    <img src="./img/first-party-after2-2021-12-21.png" width="600px" alt="A malicious site cannot access the Partitioned cookies set on the first party's top-level site.">
+    <br><br>
+</figure></center>
+
+It's important to note that `Partitioned` does not offer all of the same protections as `SameSite=Lax/Strict`.
+For example, consider the case when `3p.com` is compromised by a malicious actor and is still embedded on `1p.com`.
+In that case, the attacker could embed `1p.com` into `3p.com`'s frame when `1p.com` is the top-level site, and the attacker would have access to `1p.com`'s `Partitioned` cookies.
 
 ## Security and Privacy Considerations
 
