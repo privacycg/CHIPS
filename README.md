@@ -577,6 +577,10 @@ If a malicious site tries to embed the first party on their own site, then the m
     <br><br>
 </figure></center>
 
+It's important to note that `Partitioned` does not offer all of the same protections as `SameSite=Lax/Strict`.
+For example consider if `3p.com` is compromised by a malicious actor.
+In that case, the attacker could embed `1p.com` into `3p.com`'s frame when `1p.com` is the top-level site, and the attacker would have access to `1p.com`'s `Partitioned` cookies.
+
 ## Security and Privacy Considerations
 
 This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts).
