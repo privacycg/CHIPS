@@ -51,6 +51,7 @@
         - [Extension pages](#extension-pages)
         - [Background contexts](#background-contexts)
     - [First-Party CHIPS](#first-party-chips)
+    - [CHIPS and First-Party Sets](#chips-and-first-party-sets)
 - [Security and Privacy Considerations](#security-and-privacy-considerations)
 - [Alternate Designs for CHIPS](#alternate-designs-for-chips)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
@@ -580,6 +581,33 @@ If a malicious site tries to embed the first party on their own site, then the m
 It's important to note that `Partitioned` does not offer all of the same protections as `SameSite=Lax/Strict`.
 For example, consider the case when `3p.com` is compromised by a malicious actor and is still embedded on `1p.com`.
 In that case, the attacker could embed `1p.com` into `3p.com`'s frame when `1p.com` is the top-level site, and the attacker would have access to `1p.com`'s `Partitioned` cookies.
+
+### CHIPS and First-Party Sets
+
+Third parties which are embedded in multiple sites that are all in the same [First-Party Set](https://github.com/privacycg/first-party-sets) may use the same cookie jar partition across those sites.
+
+For example, say a third party, `3p.com`, sets a `Partitioned` cookie while embedded on a top-level site that is in a First-Party Set, `owner.com`.
+Note that the third party's cookie jar's partition key is `https://owner.com`.
+
+<center><figure>
+    <img src="./img/fps0-2022-01-26.png" width="600px" alt="A third party sets a Partitioned cookie while embedded on a site in a First-Party Set.">
+    <br><br>
+</figure></center>
+
+When the browser navigates to another site in the set, `member.com`, the third party can still access the `Partitioned` cookie set when the top-level site was `owner.com`.
+Note that the third party's cookie jar's partition key is still `https://owner.com`.
+
+<center><figure>
+    <img src="./img/fps1-2022-01-26.png" width="600px" alt="A third party can still acces its Partitioned cookie on another site in the same First-Party Set.">
+    <br><br>
+</figure></center>
+
+When the browser navigates to a site that is not in the set, `notin.set`, the third party cannot access the `Partitioned` cookie since their cookie jar's partition key is no longer `https://owner.com`.
+
+<center><figure>
+    <img src="./img/fps2-2022-01-26.png" width="600px" alt="A third party cannot access a Partitioned cookie on a site that is not in the First-Party Set.">
+    <br><br>
+</figure></center>
 
 ## Security and Privacy Considerations
 
