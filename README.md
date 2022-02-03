@@ -9,6 +9,11 @@
 
 - https://github.com/WICG/CHIPS/issues
 
+## Interested in the CHIPS Origin Trial?
+
+Chrome will soon be experimenting with CHIPS using an [Origin Trial](https://github.com/GoogleChrome/OriginTrials).
+For more information about the design of the Origin-Trial, see this [design doc](https://docs.google.com/document/d/1EPHnfHpZHpV09vITXu8cEEIMt1DYiRN_pZfeBal8UQw/).
+
 ## Table of Contents
 
 - [Motivation](#motivation)
