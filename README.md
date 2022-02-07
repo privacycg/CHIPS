@@ -149,8 +149,7 @@ Below are some examples of third-party cookie use cases that are unrelated to tr
 #### Before unpartitioned third-party cookies are blocked
 
 Let's say that a page on `shoes.com` wants to show users a map of their store locations, but they do not have the  resources to implement a locator service.
-Instead, they contract that work out to a third-party SaaS provider.
-`embed.maps.com`, and `shoes.com` embeds a frame owned by `embed.maps.com` which renders a map that users can use to pick their preferred store location and look up directions.
+Instead, they contract that work out to a third-party SaaS provider, `embed.maps.com`, and `shoes.com` embeds a frame owned by `embed.maps.com` which renders a map that users can use to pick their preferred store location and look up directions.
 
 When the browser is on `shoes.com`, an embedded frame owned by `embed.maps.com` sets a cookie to store a user's preferred store location:
 
