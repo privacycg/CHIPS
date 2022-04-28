@@ -451,7 +451,7 @@ This requirement make partitioned cookies be as close to third-party origin-boun
 
 #### `HttpOnly` attribute
 
-User agents may also enforce that `Partitioned` cookies also include the `HttpOnly` attribute, but we are less confident they should require it.
+User agents **may** also enforce that `Partitioned` cookies also include the `HttpOnly` attribute, but we are less confident they should require it.
 Ensuring that partitioned cookies are only available on the network stack makes them less susceptible to XSS attacks.
 
 #### `SameSite` attribute
