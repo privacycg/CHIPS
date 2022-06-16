@@ -52,6 +52,7 @@ For more information about the design of the Origin-Trial, see the [documentatio
         - [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition)
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
     - [CookieStore API](#cookiestore-api)
+    - [Storage Access API](#storage-access-api)
     - [Handling older or incompatible clients](#handling-older-or-incompatible-clients)
     - [Memory impact](#memory-impact)
     - [Service workers](#service-workers)
@@ -499,6 +500,10 @@ We propose modest changes to the [CookieStore API](https://wicg.github.io/cookie
 1.  Add an optional boolean field, `partitioned` to [CookieStoreDeleteOptions](https://wicg.github.io/cookie-store/#dictdef-cookiestoredeleteoptions).
     This will allow callers of [`CookieStore.delete`](https://wicg.github.io/cookie-store/#CookieStore-delete) to specify whether they want to delete a `partitioned` cookie.
     If the field is not present, it will default to `false`.
+
+### Storage Access API
+
+Partitioned cookies should be accessible regardless of any choices the user has made via the Storage Access API in the given context. Even if the user has rejected or dismissed a prompt for storage access then partitioned cookies should still be accessible (partitioned LocalStorage will still be available in such a context, so blocking access to partitioned cookies would have no effect on user privacy).
 
 ### Handling older or incompatible clients
 
