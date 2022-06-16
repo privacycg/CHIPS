@@ -503,7 +503,7 @@ We propose modest changes to the [CookieStore API](https://wicg.github.io/cookie
 
 ### Storage Access API
 
-Partitioned cookies should be accessible regardless of any choices the user has made via the Storage Access API in the given context. I.e., even if the user has rejected or dismissed a prompt for storage access, partitioned cookies should still be accessible. (Note that partitioned LocalStorage will still be readable/writable in such a context, so blocking access to partitioned cookies would have no effect on user privacy.)
+Partitioned cookies should be accessible regardless of any choices the user has made via the Storage Access API in the given context. Even if the user has rejected or dismissed a prompt for storage access then partitioned cookies should still be accessible (partitioned LocalStorage will still be available in such a context, so blocking access to partitioned cookies would have no effect on user privacy).
 
 ### Handling older or incompatible clients
 
