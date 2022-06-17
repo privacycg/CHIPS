@@ -95,7 +95,7 @@ Some examples of such use cases are SaaS providers ([1](https://github.com/priva
 
 In order to meet the use cases, we propose to introduce partitioned cookies a.k.a. CHIPS (Cookies Having Independent Partitioned State).
 Third parties may opt-in to using CHIPS by setting their cross-site cookies with the `Partitioned` attribute.
-This attribute will indicate to user agents that these cross-site cookies should only be available in the same top-level context (top-level site or that site's [First-Party Set](https://github.com/privacycg/first-party-sets) if it has one) that the cookie was created in.
+This attribute will indicate to user agents that these cross-site cookies should only be available in the same top-level site that the cookie was created in.
 
 Under this proposal when a user visits `green.com` and embedded content from `red.com` sets a cookie in response to the cross-site request, the user agent would only send that cookie when the top-level site is `green.com`.
 When they are visiting a new site, `blue.com`, an embedded `red.com` frame would not receive the cookie set when `red.com` was embedded in `green.com`.
@@ -312,17 +312,10 @@ A cookie's partition key is the [site](https://html.spec.whatwg.org/#sites) (i.e
 Likewise, a request's partition key is the site of the top-level URL the browser is visiting at the start of a request.
 Browsers must only send a cookie with the `Partitioned` attribute in requests with the same partition key as that cookie.
 
-If the top-level site has an `https` scheme and is part of a [First-Party Set](https://github.com/privacycg/first-party-sets), the third-party can share the same partition across sites within the same set.
-In this case, the domain component of the partition key is the [owner domain](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set) of the First-Party-Set.
-This is consistent with Chrome’s [privacy principle of partitioning identity by first party](https://github.com/michaelkleber/privacy-model#identity-is-partitioned-by-first-party-site), and ensures that tracking across unrelated sites is prevented by the obsoletion of unpartitioned third-party cookies.
-
-If the top-level site has an `http` scheme, the First-Party Set feature [does not apply](https://github.com/privacycg/first-party-sets#declaring-a-first-party-set), since it is only supported on secure origins.
-
 ### Opt-in cookie attribute
 
 We propose a new cookie attribute, `Partitioned`, which must be specified by the `Set-Cookie` header to indicate that the cookie should only be delivered in the same partition the cookie was set in.
 Any cookies that are not set with the `Partitioned` attribute will eventually be blocked in third-party contexts.
-(Note: Other features like the [`SameParty`](https://github.com/cfredric/sameparty) attribute may adjust the details of such blocking across domains within the same First-Party Set.)
 
 ### Using `Set-Cookie` with `Partitioned`
 
@@ -341,8 +334,6 @@ This algorithm could be added to [section 5.3 of RFC6265bis](https://datatracker
 1.  Let "partition-key" be null.
 
 1.  If an attribute-name case-insensitively matches the string `"Partitioned"` then "partition-key" should be the [site](https://html.spec.whatwg.org/#sites) of the top-level document when the user agent made the request.
-
-    1. If the top-level document's site is in a [First-Party Set](https://github.com/privacycg/first-party-sets), then "partition-key" is the concatenation of "https://" and the "owner domain" of the site's set.
 
 1.  Append an attribute to the cookie-attribute-list with an attribute-name of "PartitionKey" and an attribute-value of "partition-key".
 
@@ -381,8 +372,6 @@ For each cookie in the cookie-list do the following:
 
 1.  Let "request-partition-key" be the [site](https://html.spec.whatwg.org/#sites) of the top-level document when the user agent initiated the request.
 
-    1.  If the top-level document's site is in a [First-Party Set](https://github.com/privacycg/first-party-sets) then the request-partition-key is the concatenation of "https://" and the "owner domain" of the site's set.
-
 1.  If the cookie's partition-key is not an exact string match of request-partition-key, then remove that cookie from the cookie-list.
 
 ### Example usage
@@ -394,7 +383,7 @@ For these examples, you can assume all of the resources are sent from secure ori
 
 Let us reconsider [example](#third-party-store-finder-service) of `shoes.com` and `embed.maps.com`: a locator service which wishes to use a cookie to store user preferences for their activity on `shoes.com` (e.g. their favorite store location).
 
-After third-party cookies are removed, `embed.maps.com` could no longer set a cookie when the top-level site is not `maps.com` or not in a First-Party Set with `maps.com`, unless they include the `Partitioned` attribute:
+After third-party cookies are removed, `embed.maps.com` could no longer set a cookie when the top-level site is not `maps.com` unless they include the `Partitioned` attribute:
 
 <pre>
 Set-Cookie: __Host-locationid=187; SameSite=None; Secure; HttpOnly; Path=/; <b>Partitioned;</b>
@@ -464,7 +453,6 @@ User agents may only accept `Partitioned` cookies if their `SameSite` attribute 
 #### `SameParty` attribute
 
 User agents should reject any cookie set with both `Partitioned` and `SameParty` attributes.
-Since sites within the same First-Party Set are allowed access to unpartitioned `SameParty` cookies, the semantic is inconsistent with partitioned cookies.
 
 #### Limit the number of cookies a third party can use in a single partition
 
@@ -593,33 +581,6 @@ If a malicious site tries to embed the first party on their own site, then the m
 It's important to note that `Partitioned` does not offer all of the same protections as `SameSite=Lax/Strict`.
 For example, consider the case when `3p.com` is compromised by a malicious actor and is still embedded on `1p.com`.
 In that case, the attacker could embed `1p.com` into `3p.com`'s frame when `1p.com` is the top-level site, and the attacker would have access to `1p.com`'s `Partitioned` cookies.
-
-### CHIPS and First-Party Sets
-
-Third parties which are embedded in multiple sites that are all in the same [First-Party Set](https://github.com/privacycg/first-party-sets) may use the same cookie jar partition across those sites.
-
-For example, say a third party, `3p.com`, sets a `Partitioned` cookie while embedded on a top-level site that is in a First-Party Set, `owner.com`.
-Note that the third party's cookie jar's partition key is `https://owner.com`.
-
-<center><figure>
-    <img src="./img/fps0-2022-01-26.png" width="600px" alt="A third party sets a Partitioned cookie while embedded on a site in a First-Party Set.">
-    <br><br>
-</figure></center>
-
-When the browser navigates to another site in the set, `member.com`, the third party can still access the `Partitioned` cookie set when the top-level site was `owner.com`.
-Note that the third party's cookie jar's partition key is still `https://owner.com`.
-
-<center><figure>
-    <img src="./img/fps1-2022-01-26.png" width="600px" alt="A third party can still acces its Partitioned cookie on another site in the same First-Party Set.">
-    <br><br>
-</figure></center>
-
-When the browser navigates to a site that is not in the set, `notin.set`, the third party cannot access the `Partitioned` cookie since their cookie jar's partition key is no longer `https://owner.com`.
-
-<center><figure>
-    <img src="./img/fps2-2022-01-26.png" width="600px" alt="A third party cannot access a Partitioned cookie on a site that is not in the First-Party Set.">
-    <br><br>
-</figure></center>
 
 ## Security and Privacy Considerations
 
