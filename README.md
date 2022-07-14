@@ -33,7 +33,6 @@ For more information about the design of the Origin-Trial, see the [documentatio
 - [Design Principles](#design-principles)
     - [Opt-in partitioned cookies](#opt-in-partitioned-cookies)
     - [Only sent over secure protocols](#only-sent-over-secure-protocols)
-    - [Hostname-bound](#hostname-bound)
     - [Avoid a large memory footprint](#avoid-a-large-memory-footprint)
 - [Detailed Design](#detailed-design)
     - [Partitioning model](#partitioning-model)
@@ -45,7 +44,7 @@ For more information about the design of the Origin-Trial, see the [documentatio
         - [Third-party customer support widgets](#third-party-customer-support-widgets)
         - [CDN load balancing](#cdn-load-balancing)
     - [How to enforce design principles](#how-to-enforce-design-principles)
-        - [Partitioned cookies must use the `__Host-` prefix](#partitioned-cookies-must-use-the-__host--prefix)
+        - [`Secure` and `Path` attributes](#secure-and-path-attributes)
         - [`HttpOnly` attribute](#httponly-attribute)
         - [`SameSite` attribute](#samesite-attribute)
         - [`SameParty` attribute](#sameparty-attribute)
@@ -65,8 +64,6 @@ For more information about the design of the Origin-Trial, see the [documentatio
 - [Alternate Designs for CHIPS](#alternate-designs-for-chips)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
     - [Applying the 180 cookies-per-domain limit](#applying-the-180-cookies-per-domain-limit)
-    - [Requiring the `__Secure-` prefix](#requiring-the-__secure--prefix)
-    - [Not requiring the `__Host-` prefix](#not-requiring-the-__host--prefix)
     - [DNS CNAME’ing](#dns-cnameing)
 - [References and Acknowledgements](#references-and-acknowledgements)
     - [Acknowledgements](#acknowledgements)
@@ -284,12 +281,6 @@ See the [Partition all third-party cookies by default](#partition-all-third-part
 Partitioned cookies must only be set by and sent over secure protocols.
 This helps address some aspects of cookies' [weak confidentiality](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-07#section-8.5) and [weak integrity](https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-07#section-8.6).
 
-### Hostname-bound
-
-Partitioned cookies should also be hostname bound.
-This and the requirement partitioned cookies be sent over secure protocols makes partitioned cookies as close to origin-bound as possible.
-We would like to have user agents scope partitioned cookies by port as well, making them origin-scoped, but we think this requirement should only be enforced if/when [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled.
-
 ### Avoid a large memory footprint
 
 One concern about introducing partitioned cookies is the proliferation of state on users' machines.
@@ -342,7 +333,7 @@ These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ie
 
 1.  If the cookie-attribute-list contains an attribute with an attribute-name of "PartitionKey" and the attribute-value is null, then skip the following steps and insert the cookie into the cookie store.
 
-1.  If the cookie-name does not start with a case-sensitive match for the string "__Host-", then abort the following steps and ignore the cookie entirely.
+1. If the cookie line does not contain the `Secure` and `Path=/` then ignore the following steps and ignore the cookie entirely.
 
 1.  If the cookie line also contains the [`SameParty` attribute](https://github.com/cfredric/sameparty) (the exact semantics of how the `SameParty` attribute is loaded into the cookie-attribute-list is TBD) then abort the following steps and ignore the cookie entirely.
 
@@ -430,14 +421,9 @@ When the browser navigates to another top-level site, then subsequent requests t
 
 ### How to enforce design principles
 
-#### Partitioned cookies must use the `__Host-` prefix
+#### `Secure` and `Path` attributes
 
-User agents must only accept Partitioned cookies which have the `__Host-` prefix.
-
-The `__Host-` prefix requires that the cookie be set with `Secure` and `Path=/` and disallows the `Domain` attribute.
-These requirements ensure that partitioned cookies only be set from and sent to secure origins only.
-It also would disallow `Domain` cookies which can be shared between different third-party subdomains within a partition.
-This requirement make partitioned cookies be as close to third-party origin-bound as possible.
+User agenst must reject any cookie set with `Partitioned` that does not also include the `Secure` and `Path=/`.
 
 #### `HttpOnly` attribute
 
@@ -498,7 +484,7 @@ Partitioned cookies should be accessible regardless of any choices the user has 
 The new cookie attribute will be ignored on older clients that don't recognize it and fall back to default behavior.
 Since these cookies are intended for third-party contexts, [clients that are incompatible with `SameSite=None`](https://www.chromium.org/updates/same-site/incompatible-clients) may reject cookies with `SameSite=None`.
 
-It is also recommended to still include the `__Host-` prefix.
+Although it is not required, it is still recommended to still include the `__Host-` prefix.
 Even clients that do not recognize the `Partitioned` attribute still enforce the semantics of the `__Host-` prefix.
 This would ensure that cross-site cookies are hostname bound and only sent over secure channels, which is still a security win.
 
@@ -640,20 +626,6 @@ When the user returns to a site with an `evil.com` embed, `evil.com` will detect
 
 How much entropy `evil.com` can learn about a particular user from this type of attack has not been explored.
 Therefore it is not clear what the relative global and per-partition limits would need to be to prevent `evil.com` from learning any identifiable information about users this way.
-
-### Requiring the `__Secure-` prefix
-
-Cookies with the `__Host-` prefix implicitly have the same properties as cookies with the `__Secure-` prefix.
-By requiring partitioned cookies to have the former we guarantee that they also have the same properties as if we required the latter.
-
-### Not requiring the `__Host-` prefix
-
-One alternate design choice is to not require that cookies with the `Partitioned` attribute have a `__Host-` prefix.
-Instead, the semantics of the `Partitioned` attribute would include the semantics of `__Host-` prefix cookies (i.e. requiring `Secure` and `Path=/`, disallowing `Domain`).
-
-We decided against this for two reasons.
-The first is that clients that do not yet recognize the `Partitioned` attribute may still recognize the `__Host-` prefix and can still benefit from its semantics.
-The second is that mixing the semantics of prefixes and attributes is not the right path forward, since it makes the semantics of either more difficult to understand.
 
 ### DNS CNAME’ing
 
