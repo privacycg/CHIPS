@@ -329,7 +329,7 @@ This algorithm could be added to [section 5.3 of RFC6265bis](https://datatracker
 1.  Append an attribute to the cookie-attribute-list with an attribute-name of "PartitionKey" and an attribute-value of "partition-key".
 
 Below is the algorithm for storing `Partitioned` cookies.
-These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.4).
+These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.4) after after the user agent checks for the `__Host-` prefix.
 
 1.  If the cookie-attribute-list contains an attribute with an attribute-name of "PartitionKey" and the attribute-value is null, then skip the following steps and insert the cookie into the cookie store.
 
