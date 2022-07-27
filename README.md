@@ -423,7 +423,7 @@ When the browser navigates to another top-level site, then subsequent requests t
 
 #### `Secure` and `Path` attributes
 
-User agenst must reject any cookie set with `Partitioned` that does not also include the `Secure` and `Path=/`.
+User agent must reject any cookie set with `Partitioned` that does not also include the `Secure` and `Path=/`.
 
 #### `HttpOnly` attribute
 
