@@ -329,11 +329,11 @@ This algorithm could be added to [section 5.3 of RFC6265bis](https://datatracker
 1.  Append an attribute to the cookie-attribute-list with an attribute-name of "PartitionKey" and an attribute-value of "partition-key".
 
 Below is the algorithm for storing `Partitioned` cookies.
-These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.4) after the user agent processes the cookie's __Host- prefix.
+These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-rfc6265bis-07#section-5.4).
 
 1.  If the cookie-attribute-list contains an attribute with an attribute-name of "PartitionKey" and the attribute-value is null, then skip the following steps and insert the cookie into the cookie store.
 
-1. If the cookie line does not contain the `Secure` and `Path=/` then ignore the following steps and ignore the cookie entirely.
+1. 1. If the cookie-attribute-list does not contain an attribute with an attribute-name of `Secure` and an attribute with an attribute-name of `Path` and attribute-value of `/` then abort these steps and ignore the cookie entirely.
 
 1.  If the cookie line also contains the [`SameParty` attribute](https://github.com/cfredric/sameparty) (the exact semantics of how the `SameParty` attribute is loaded into the cookie-attribute-list is TBD) then abort the following steps and ignore the cookie entirely.
 
