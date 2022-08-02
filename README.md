@@ -570,7 +570,7 @@ In that case, the attacker could embed `1p.com` into `3p.com`'s frame when `1p.c
 
 ## Security and Privacy Considerations
 
-This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `__Host-` prefix and the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts).
+This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts).
 
 Sites are more prone to XSS attacks as embedded frames since these contexts rely on cross-site cookies for a notion of user session/state.
 Partitioning cross-site cookies makes XSS attacks less powerful, since an attacker would need to navigate the user's browser to a compromised cookie's top-level site in order for the browser to send the cookie at all.
