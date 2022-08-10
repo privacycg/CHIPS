@@ -47,7 +47,6 @@ For more information about the design of the Origin-Trial, see the [documentatio
         - [`Secure` and `Path` attributes](#secure-and-path-attributes)
         - [`HttpOnly` attribute](#httponly-attribute)
         - [`SameSite` attribute](#samesite-attribute)
-        - [`SameParty` attribute](#sameparty-attribute)
         - [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition)
     - [Clearing partitioned cookies](#clearing-partitioned-cookies)
     - [CookieStore API](#cookiestore-api)
@@ -335,8 +334,6 @@ These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ie
 
 1. 1. If the cookie-attribute-list does not contain an attribute with an attribute-name of `Secure` and an attribute with an attribute-name of `Path` and attribute-value of `/` then abort these steps and ignore the cookie entirely.
 
-1.  If the cookie line also contains the [`SameParty` attribute](https://github.com/cfredric/sameparty) (the exact semantics of how the `SameParty` attribute is loaded into the cookie-attribute-list is TBD) then abort the following steps and ignore the cookie entirely.
-
 1.  Set the cookie's partition-key to the attribute-value of the element in the attribute-list whose attribute-name is "PartitionKey".
 
 Also, we would modify the first part of step 19 of the algorithm in step 5.4 to also include the partition-key in the list of cookie attributes to check, so that two cookies with the same name, domain, host-only-flag, and path can coexist in the cookie store if their partition-key values differ.
@@ -435,10 +432,6 @@ Ensuring that partitioned cookies are only available on the network stack makes 
 User agents may only accept `Partitioned` cookies if their `SameSite` attribute is `None`.
 
 **Note:** a `Partitioned` cookie without `SameSite=None` is effectively just a same-site cookie which cannot be sent in a third-party context anyway.
-
-#### `SameParty` attribute
-
-User agents should reject any cookie set with both `Partitioned` and `SameParty` attributes.
 
 #### Limit the number of cookies a third party can use in a single partition
 
@@ -651,7 +644,6 @@ We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yass
 
 ### References
 
-- [cfredric/sameparty](https://github.com/cfredric/sameparty)
 - [Chromium Blog: Building a more private web: A path towards making third party cookies obsolete](https://blog.chromium.org/2020/01/building-more-private-web-path-towards.html)
 - [Clear-Site-Data for partitioned storage can be used for cross-site tracking · Issue #11 · privacycg/storage-partitioning](https://github.com/privacycg/storage-partitioning/issues/11)
 - [Cookie Store API Explainer | cookie-store](https://wicg.github.io/cookie-store/explainer.html)
