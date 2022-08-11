@@ -44,7 +44,7 @@ For more information about the design of the Origin-Trial, see the [documentatio
         - [Third-party customer support widgets](#third-party-customer-support-widgets)
         - [CDN load balancing](#cdn-load-balancing)
     - [How to enforce design principles](#how-to-enforce-design-principles)
-        - [`Secure` and `Path` attributes](#secure-and-path-attributes)
+        - [`Secure` attribute](#secure-attributes)
         - [`HttpOnly` attribute](#httponly-attribute)
         - [`SameSite` attribute](#samesite-attribute)
         - [Limit the number of cookies a third party can use in a single partition](#limit-the-number-of-cookies-a-third-party-can-use-in-a-single-partition)
@@ -332,7 +332,7 @@ These steps could be added to [section 5.4 of RFC6265bis](https://datatracker.ie
 
 1.  If the cookie-attribute-list contains an attribute with an attribute-name of "PartitionKey" and the attribute-value is null, then skip the following steps and insert the cookie into the cookie store.
 
-1. 1. If the cookie-attribute-list does not contain an attribute with an attribute-name of `Secure` and an attribute with an attribute-name of `Path` and attribute-value of `/` then abort these steps and ignore the cookie entirely.
+1. If the cookie-attribute-list does not contain an attribute with an attribute-name of `Secure` then abort these steps and ignore the cookie entirely.
 
 1.  Set the cookie's partition-key to the attribute-value of the element in the attribute-list whose attribute-name is "PartitionKey".
 
@@ -418,9 +418,9 @@ When the browser navigates to another top-level site, then subsequent requests t
 
 ### How to enforce design principles
 
-#### `Secure` and `Path` attributes
+#### `Secure` attribute
 
-User agent must reject any cookie set with `Partitioned` that does not also include the `Secure` and `Path=/`.
+User agent must reject any cookie set with `Partitioned` that does not also include the `Secure`.
 
 #### `HttpOnly` attribute
 
