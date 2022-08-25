@@ -28,7 +28,7 @@ The usefulness of this page depends on testers sharing information and updates; 
 
 ## How to submit
 
-1. On the  [API] GitHub page, navigate to the document in the main table called ‘CHIPS-tester-list.md’
+1. On the CHIPS GitHub page, navigate to the document in the main table called ‘CHIPS-tester-list.md’
 
 1. Click the ‘pencil’ icon on the right side to edit the table and add your information
     1. Use the | to make sure that the information that you provide correctly shows up in each cell
