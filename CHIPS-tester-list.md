@@ -11,7 +11,7 @@ The usefulness of this page depends on testers sharing information and updates; 
 
 - Not evaluative. The purpose of this page is to consolidate links to information published by Privacy Sandbox testers.  Editors will review submissions for relevance and to ensure general conformance to the guidelines above, but are not evaluating or endorsing the information provided.
 
-- Editors will regularly review and approve submissions that meet the guidelines below. If you believe that an error has been submitted, please create an issue in the [API] repository with the words ‘[Tester List’] in the subject and the Editors will respond in short order.
+- Editors will regularly review and approve submissions that meet the guidelines below. If you believe that an error has been submitted, please create an issue in the CHIPS repository with the words ‘[Tester List’] in the subject and the Editors will respond in short order.
 
 ## Guidelines
 
@@ -21,7 +21,6 @@ The usefulness of this page depends on testers sharing information and updates; 
 
 - Table fields:
     - Company/Party: The organization directly conducting tests or analysis.
-    - Role in Testing: Organization’s role with respect to testing [API]. For example, SSP or DSP.
     - Est. Testing Timeframe: Expected start and duration of tests, if known.
     - [Optional] Link to Testing Plan and/or Learnings: Link to GitHub issues, blog posts or other public information.  This could include plans for upcoming tests, or insights and summaries from completed tests.
     - [Optional] How to Contact You: For example, a website form or reply on a GitHub issue.
