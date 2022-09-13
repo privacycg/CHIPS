@@ -3,7 +3,7 @@
 ## Ecosystem Testing of CHIPS
 
 The purpose of this page is to consolidate testing information which is currently distributed across various GitHub issues, company blogs, social posts, etc.
-The usefulness of this page depends on testers sharing information and updates; if testers do not contribute or the information becomes stale it would make sense to deprecate.
+The usefulness of this page depends on testers sharing information and updates.
 
 ## Disclaimers
 
@@ -37,5 +37,5 @@ The usefulness of this page depends on testers sharing information and updates; 
 
 ## Table
 
-| Company / Party | Industry or vertical | Est. Testing Timeframe | Link to testing plan and/or learnings | How to contact you |
-| --------------- | -------------------- | ---------------------- | ------------------------------------- | ------------------ |
+| Company / Party | Industry or vertical | Est. Testing Timeframe | Link to testing plan and/or learnings (optional) | How to contact you (optional) |
+| --------------- | -------------------- | ---------------------- | ------------------------------------------------ | ----------------------------- |
