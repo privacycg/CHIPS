@@ -40,4 +40,4 @@ The usefulness of this page depends on testers sharing information and updates.
 | Company / Party | Industry or vertical | Est. Testing Timeframe | Link to testing plan and/or learnings (optional) | How to contact you (optional) |
 | --------------- | -------------------- | ---------------------- | ------------------------------------------------ | ----------------------------- |
 |[BookWidgets](https://www.bookwidgets.com)|EdTech|2022-2023||[E-mail](mailto:info@bookwidgets.com)|  
-| [WebEngage ] ( www.webengage.com ) | Marketing Automation 2022-23 | | mailto:support@webengage.com |
+|[WebEngage](www.webengage.com) | Marketing Automation|2022-2023 ||[E-mail](mailto:support@webengage.com)|
