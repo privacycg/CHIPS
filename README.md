@@ -439,7 +439,7 @@ A third-party domain's cookie jar should have a much lower per-partition size li
 User agents must limit third-party domains to just one or some small number of cookies per-partition.
 The number of cookies in a single partition per third-party is scoped by domain so that a third-party could not circumvent this limit by registering new subdomains.
 
-Based on [feedback on this proposal](https://github.com/privacycg/CHIPS/issues/48) that both a lower limit of cookies per-partition as well as a lower maximum size of individual partitioned cookies will pose problems for developers, we suggest a limit based on the total amount of memory used up by cookies of a partitioned site. This limit could be 10kb.
+Based on [feedback on this proposal](https://github.com/privacycg/CHIPS/issues/48) that both a lower limit of cookies per-partition as well as a lower maximum size of individual partitioned cookies will pose problems for developers, we suggest a limit based on the total amount of memory used up by cookies of a partitioned site. This limit could be 10 kibibytes.
 
 User agents may enforce some global limit on the number of partitioned cookies in the cookie jar.
 This is to ensure that as a user visits more top-level sites over time that the number of partitioned cookies saved to their machine does not grow over time without bound.
