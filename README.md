@@ -187,7 +187,7 @@ This would enable `embed.maps.com` to store user preferences with cookies withou
 Consider `retail.com` has noticed that users are having trouble signing up for an account and navigating through the site's purchase flow.
 The owners of `retail.com` contract a third party, `support.chat.com`, to embed a chat widget on `retail.com` to help users who need support.
 
-When a user is intercting with `support.chat.com`'s widget, they set a session cookie to continue conversations between top-level page navigations:
+When a user is interacting with `support.chat.com`'s widget, they set a session cookie to continue conversations between top-level page navigations:
 
 ```
 Set-Cookie: __Host-coversationid=a3e70; SameSite=None; Secure; HttpOnly; Path=/;
@@ -283,8 +283,8 @@ This helps address some aspects of cookies' [weak confidentiality](https://tools
 ### Avoid a large memory footprint
 
 One concern about introducing partitioned cookies is the proliferation of state on users' machines.
-With unpartitioned third-party cookies, a single third party only needed to set one cookie on a user's machines which could be used for cross-site requests across all top-level sites a user visits.
-After unpartitioned third-party cookies are removed, a third party will need to set one cookie per top-level context that the user visits, resulting in more cookies set on user's machines.
+With unpartitioned third-party cookies, a single third party only needed to set one cookie on a user's machine which could be used for cross-site requests across all top-level sites a user visits.
+After unpartitioned third-party cookies are removed, a third party will need to set one cookie per top-level context that the user visits, resulting in more cookies set on users' machines.
 
 Browsers that wish to support partitioned cookies must impose additional limitations on the number of cookies available to a third-party domain per-partition.
 
