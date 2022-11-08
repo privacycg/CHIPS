@@ -7,7 +7,7 @@
 
 ## Participate
 
-- https://github.com/WICG/CHIPS/issues
+- https://github.com/privacycg/CHIPS/issues
 
 ## Interested in the CHIPS Origin Trial?
 
