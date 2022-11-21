@@ -101,6 +101,10 @@ See 3.1.
 Like all other cookies, partitioned cookies can be shared across different subdomains using the Domain attribute.
 Partitioned cookies require Secure, so they are not accessible in insecure origins.
 
+In an effort to bring cookies closer to using origin as the security boundary, we previously proposed that partitioned cookies be required to be scheme- and hostname-bound, unlike other cookies.
+However, we received feedback from site authors that this would make it too cumbersome to migrate legacy systems to the more privacy-forward partitioned cookies.
+In order to alleviate this concern, we have since removed that requirement.
+
 ### 3.4. Third-Party Tracking
 
 Partitioning cross-site cookies by top-level site is meant to reduce (or eliminate) third parties' ability to use cookies as a cross-site identifier.
