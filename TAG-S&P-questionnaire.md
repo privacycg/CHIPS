@@ -98,8 +98,8 @@ See 3.1.
 
 ### 3.3. Same-Origin Policy Violations
 
-By requiring the __Host- prefix, this proposal makes partitioned cookies scheme- and hostname-bound.
-However, even cookies with the __Host- prefix can still be sent to different ports (though this may change if [Origin-Bound Cookies](https://github.com/sbingler/Origin-Bound-Cookies) is enabled).
+Like all other cookies, partitioned cookies can be shared across different subdomains using the Domain attribute.
+Partitioned cookies require Secure, so they are not accessible in insecure origins.
 
 ### 3.4. Third-Party Tracking
 
