@@ -58,7 +58,6 @@ For more information about the design of the Origin-Trial, see the [documentatio
         - [Extension pages](#extension-pages)
         - [Background contexts](#background-contexts)
     - [First-Party CHIPS](#first-party-chips)
-    - [CHIPS and First-Party Sets](#chips-and-first-party-sets)
 - [Security and Privacy Considerations](#security-and-privacy-considerations)
 - [Alternate Designs for CHIPS](#alternate-designs-for-chips)
     - [Limit the number of cookies in a partition](#limit-the-number-of-cookies-in-a-partition)
