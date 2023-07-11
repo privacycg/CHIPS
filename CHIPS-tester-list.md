@@ -42,3 +42,4 @@ The usefulness of this page depends on testers sharing information and updates.
 |[BookWidgets](https://www.bookwidgets.com)|EdTech|2022-2023||[E-mail](mailto:info@bookwidgets.com)|  
 |[WebEngage](www.webengage.com) | Marketing Automation|2022-2023 ||[E-mail](mailto:support@webengage.com)|
 |[VWO](https://vwo.com) | Conversion Rate Optimization|2022-2023 ||[E-mail](mailto:support@vwo.com)|
+| Vocento | Publisher | |2023 | privacysandbox@vocento.com |
