@@ -9,14 +9,6 @@
 
 - https://github.com/privacycg/CHIPS/issues
 
-## Interested in the CHIPS Origin Trial?
-
-Chrome will be experimenting with CHIPS using an [origin trial](https://github.com/GoogleChrome/OriginTrials) from March 31 to August 30, 2022.
-
-You can register for the origin trial [here](https://developer.chrome.com/origintrials/#/view_trial/1239615797433729025).
-
-For more information about the design of the Origin-Trial, see the [documentation](https://chromium.org/updates/chips).
-
 ## Table of Contents
 
 - [Motivation](#motivation)
