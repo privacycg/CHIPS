@@ -35,6 +35,9 @@ The usefulness of this page depends on testers sharing information and updates.
 
 1. You can find additional details here for [editing tables in GitHub](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-tables).
 
+> [!TIP]
+> If you’re implementing CHIPS in preparation for third-party cookie deprecation (3PCD), we encourage you to an entry to the [3PCD Readiness List](https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pcd-readiness.md) in the Privacy Sandbox repository to highlight your progress towards this change.
+
 ## Table
 
 | Company / Party | Industry or vertical | Est. Testing Timeframe | Link to testing plan and/or learnings (optional) | How to contact you (optional) |
