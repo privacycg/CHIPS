@@ -3,7 +3,7 @@
 ## Editors
 
 - [Dylan Cutler](https://github.com/DCtheTall)
-- [Kaustubha Govind](https://github.com/krgovind)
+- [Aaron Selya](https://github.com/aselya)
 
 ## Participate
 
@@ -633,7 +633,7 @@ Additionally, this adds implementation and deployment complexity for developers.
 
 ### Acknowledgements
 
-We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yasskin for their insights and advice that helped us shape this proposal.
+We'd like to thank Kaustubha Govind for their contributions as editor emeritus. We’d like to thank Lily Chen, Steven Bingler, Rowan Merewood, and Jeffrey Yasskin for their insights and advice that helped us shape this proposal.
 
 ### References
 
