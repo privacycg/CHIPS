@@ -4,16 +4,16 @@ This is the working area for the individual Internet-Draft, "Cookies Having Inde
 
 **The original proposal and discussions are in [privacycg/CHIPS](https://github.com/privacycg/CHIPS).**
 
-* [Editor's Copy](https://explainers-by-googlers.github.io/CHIPS-spec/#go.draft-cutler-httpbis-partitioned-cookies-00.html)
+* [Editor's Copy](https://privacycg.github.io/CHIPS/CHIPS-spec/#go.draft-cutler-httpbis-partitioned-cookies-00.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-cutler-httpbis-partitioned-cookies-00)
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-cutler-httpbis-partitioned-cookies-00)
-* [Compare Editor's Copy to Individual Draft](https://explainers-by-googlers.github.io/CHIPS-spec/#go.draft-cutler-httpbis-partitioned-cookies-00.diff)
+* [Compare Editor's Copy to Individual Draft](https://privacycg.github.io/CHIPS/CHIPS-spec/#go.draft-cutler-httpbis-partitioned-cookies-00.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/explainers-by-googlers/CHIPS-spec/blob/main/CONTRIBUTING.md).
+[guidelines for contributions]([https://github.com//CHIPS-spec/blob/main/CONTRIBUTING.md](https://github.com/privacycg/CHIPS/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
