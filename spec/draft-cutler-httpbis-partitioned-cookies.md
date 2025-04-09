@@ -23,8 +23,8 @@ venue:
  home: https://httpwg.org/
  mail: ietf-http-wg@w3.org
  arch: https://lists.w3.org/Archives/Public/ietf-http-wg/
- github: "DCtheTall/CHIPS-spec"
- latest: "https://DCtheTall.github.io/CHIPS-spec/draft-cutler-httpbis-partitioned-cookies.html"
+ github: "privacycg/CHIPS/CHIPS-spec"
+ latest: "https://privacycg.github.io/CHIPS/CHIPS-spec/draft-cutler-httpbis-partitioned-cookies.html"
 
 author:
  -
