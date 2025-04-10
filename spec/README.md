@@ -9,6 +9,7 @@ This is the working area for the individual Internet-Draft, "Cookies Having Inde
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-cutler-httpbis-partitioned-cookies-00)
 * [Compare Editor's Copy to Individual Draft](https://privacycg.github.io/CHIPS/CHIPS-spec/#go.draft-cutler-httpbis-partitioned-cookies-00.diff)
 
+
 ## Contributing
 
 See the
