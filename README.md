@@ -550,8 +550,6 @@ If a malicious site tries to embed the first party on their own site, then the m
     <br><br>
 </figure></center>
 
-It's important to note that `Partitioned` does not offer all of the same protections as `SameSite=Lax/Strict`. For example partitioned cookies may be sent in cross-site requests from iframes which is prohibitied by SameSite-Lax/Strict.
-
 ## Security and Privacy Considerations
 
 This proposal takes the opportunity of defining the semantics of a new cookie attribute in order to require the `Secure` attribute, restricting this feature to [secure contexts](https://w3c.github.io/webappsec-secure-contexts).
