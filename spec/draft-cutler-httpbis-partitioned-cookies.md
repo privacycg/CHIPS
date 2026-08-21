@@ -178,7 +178,7 @@ The following could be added as a new subsection of section 6.1 (Limits):
 {:quote}
 > User agents SHOULD enforce a separate per-domain limit for partitioned cookies for a particular cookie-partition-key.
 > This limit SHOULD be lower than the per-domain limit for cookies without the Partitioned attribute to prevent cookies set on different top-level sites from reaching implementation memory limits.
-> Since memory is the main concern, in addition to limiting the number of cookies a domain may use per partition, a user agent MAY limit how many bytes a domain's cookies occupy on the user agent's device to only 10 kilobytes per top-level partition.
+> Since memory is the main concern, in addition to limiting the number of cookies a domain may use per partition, a user agent MAY limit how many bytes a domain's cookies occupy on the user agent's device to only 10 kibibytes per top-level partition.
 > The user agent SHOULD consider memory occupied by each cookie to be the sum of the number of octets in the cookie-name and cookie-value.
 
 ## Third-Party Cookie Controls
